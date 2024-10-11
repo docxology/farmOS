@@ -1,0 +1,8 @@
+name: Sensemaking
+description: Adds a Sensemaking log type for perceptual inference in farmOS.
+type: module
+package: farmOS Inference
+core_version_requirement: ^10
+dependencies:
+  - farm:farm_entity
+  - log:log

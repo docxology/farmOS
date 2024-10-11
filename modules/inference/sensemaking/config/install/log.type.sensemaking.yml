@@ -1,0 +1,14 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - farm_log
+  enforced:
+    module:
+      - farm_sensemaking
+id: sensemaking
+label: Sensemaking
+description: 'Log type for recording perceptual inferences and insights.'
+name_pattern: 'Sensemaking log [log:id]'
+workflow: farm_log_workflow
+new_revision: true

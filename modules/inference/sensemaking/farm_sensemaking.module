@@ -1,0 +1,32 @@
+<?php
+
+/**
+ * @file
+ * Contains farm_sensemaking.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function farm_sensemaking_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.farm_sensemaking':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('The Farm Sensemaking module adds support for recording and managing perceptual inferences in farmOS.') . '</p>';
+      return $output;
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function farm_sensemaking_theme() {
+  return [
+    'sensemaking_log' => [
+      'render element' => 'elements',
+    ],
+  ];
+}
