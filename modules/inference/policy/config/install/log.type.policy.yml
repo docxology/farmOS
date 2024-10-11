@@ -1,0 +1,14 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - farm_log
+  enforced:
+    module:
+      - farm_policy
+id: policy
+label: Policy
+description: 'Log type for recording and managing farm policies.'
+name_pattern: 'Policy log [log:id]'
+workflow: farm_log_workflow
+new_revision: true

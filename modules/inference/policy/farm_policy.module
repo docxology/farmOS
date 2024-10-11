@@ -1,0 +1,40 @@
+<?php
+
+/**
+ * @file
+ * Contains farm_policy.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function farm_policy_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.farm_policy':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('The Farm Policy module adds support for managing and selecting policies using Active Inference methods in farmOS.') . '</p>';
+      return $output;
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function farm_policy_theme() {
+  return [
+    'policy_log' => [
+      'render element' => 'elements',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_cron().
+ */
+function farm_policy_cron() {
+  // Implement periodic policy evaluation and selection.
+  \Drupal::service('farm_policy.policy_manager')->evaluatePolicies();
+}

@@ -1,0 +1,9 @@
+name: Farm Policy
+description: Adds support for managing and selecting policies using Active Inference methods in farmOS.
+type: module
+package: farmOS Inference
+core_version_requirement: ^10
+dependencies:
+  - farm:farm_entity
+  - log:log
+  - farm:farm_sensemaking
