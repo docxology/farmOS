@@ -3,9 +3,15 @@
 /**
  * @file
  * Contains farm_policy.module.
+ *
+ * This module implements Active Inference methods for policy selection and
+ * management in farmOS. It provides a framework for evaluating and applying
+ * optimal farm management policies based on current farm state and predicted
+ * outcomes.
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\log\Entity\LogInterface;
 
 /**
  * Implements hook_help().
@@ -15,7 +21,12 @@ function farm_policy_help($route_name, RouteMatchInterface $route_match) {
     case 'help.page.farm_policy':
       $output = '';
       $output .= '<h3>' . t('About') . '</h3>';
-      $output .= '<p>' . t('The Farm Policy module adds support for managing and selecting policies using Active Inference methods in farmOS.') . '</p>';
+      $output .= '<p>' . t('The Farm Policy module adds support for managing and selecting policies using Active Inference methods in farmOS. It provides:') . '</p>';
+      $output .= '<ul>';
+      $output .= '<li>' . t('A policy log type for recording farm management decisions.') . '</li>';
+      $output .= '<li>' . t('A policy manager service that implements Active Inference for policy selection.') . '</li>';
+      $output .= '<li>' . t('Integration with the Farm Sensemaking module for analyzing farm state.') . '</li>';
+      $output .= '</ul>';
       return $output;
   }
 }
@@ -27,14 +38,60 @@ function farm_policy_theme() {
   return [
     'policy_log' => [
       'render element' => 'elements',
+      'template' => 'policy-log',
     ],
   ];
 }
 
 /**
  * Implements hook_cron().
+ *
+ * Periodically evaluates and selects new policies based on the current farm
+ * state and Active Inference principles.
  */
 function farm_policy_cron() {
-  // Implement periodic policy evaluation and selection.
+  \Drupal::logger('farm_policy')->info('Starting scheduled policy evaluation');
   \Drupal::service('farm_policy.policy_manager')->evaluatePolicies();
+  \Drupal::logger('farm_policy')->info('Completed scheduled policy evaluation');
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_insert() for log entities.
+ *
+ * Triggers policy evaluation when new logs are created that might affect
+ * the farm state.
+ */
+function farm_policy_log_insert(LogInterface $log) {
+  $trigger_types = ['harvest', 'input', 'observation'];
+  if (in_array($log->bundle(), $trigger_types)) {
+    \Drupal::logger('farm_policy')->info('New @type log created, triggering policy evaluation', ['@type' => $log->bundle()]);
+    \Drupal::service('farm_policy.policy_manager')->evaluatePolicies();
+  }
+}
+
+/**
+ * Implements hook_farm_policy_options_alter().
+ *
+ * Allows other modules to alter the policy options before evaluation.
+ */
+function hook_farm_policy_options_alter(array &$policy_options, array $farm_state) {
+  // Example: Add a custom policy option.
+  $policy_options[] = [
+    'name' => 'Custom Policy',
+    'description' => 'A custom policy added by another module',
+    'actions' => [
+      // Define custom actions here.
+    ],
+  ];
+  \Drupal::logger('farm_policy')->info('Custom policy option added by @module', ['@module' => 'example_module']);
+}
+
+/**
+ * Implements hook_farm_policy_applied().
+ *
+ * Allows other modules to react when a policy is applied.
+ */
+function hook_farm_policy_applied($policy) {
+  \Drupal::logger('farm_policy')->info('Policy applied: @name', ['@name' => $policy['name']]);
+  // React to the applied policy here.
 }

@@ -319,12 +319,11 @@ def main():
     print(f"Database name: {db_config['name']}")
     print(f"Database username: {db_config['user']}")
     print(f"Database password: {db_config['password']}")
-    print(f"Database host: db")  # Changed from localhost to db
+    print(f"Database host: db") 
     print(f"Database port: 5432")
     print(f"Table prefix: {db_config['prefix']}")
     print("----------------------------------------------")
     print("Copy and paste this information into the browser setup when prompted.")
-    print("\nIMPORTANT: Use 'db' as the database host when setting up in the browser.")
 
     # Secure permissions after installation
     from FarmWorks_Security import secure_farmOS_permissions

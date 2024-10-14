@@ -30,3 +30,50 @@ function farm_sensemaking_theme() {
     ],
   ];
 }
+
+/**
+ * Implements hook_farm_state_alter().
+ *
+ * Allows other modules to alter the farm state before it's used for policy evaluation.
+ */
+function hook_farm_state_alter(array &$farm_state) {
+  // Example: Add custom data to the farm state.
+  $farm_state['custom_data'] = [
+    // Add custom data here.
+  ];
+  \Drupal::logger('farm_sensemaking')->info('Custom data added to farm state by @module', ['@module' => 'example_module']);
+}
+
+/**
+ * Implements hook_cron().
+ *
+ * Periodically updates the farm state and creates sensemaking logs.
+ */
+function farm_sensemaking_cron() {
+  \Drupal::logger('farm_sensemaking')->info('Starting scheduled farm state update');
+  $sensemaking_service = \Drupal::service('farm_sensemaking.sensemaking_service');
+  $farm_state = $sensemaking_service->getCurrentFarmState();
+  
+  // Create a sensemaking log based on the current farm state
+  $inference = 'Periodic farm state update';
+  $confidence = 1.0;
+  $data_sources = ['cron'];
+  $sensemaking_service->createSensemakingLog($inference, $confidence, $data_sources);
+  
+  \Drupal::logger('farm_sensemaking')->info('Completed scheduled farm state update and created sensemaking log');
+}
+
+/**
+ * Implements hook_farm_sensemaking_inference_alter().
+ *
+ * Allows other modules to alter the inference before it's saved as a log.
+ */
+function hook_farm_sensemaking_inference_alter(&$inference, &$confidence, array &$data_sources) {
+  // Example: Modify the inference based on custom logic
+  if (strpos($inference, 'weather') !== FALSE) {
+    $inference .= ' (weather-related)';
+    $confidence *= 0.9;
+    $data_sources[] = 'weather_module';
+  }
+  \Drupal::logger('farm_sensemaking')->info('Inference altered by @module', ['@module' => 'example_module']);
+}
