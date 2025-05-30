@@ -5,6 +5,8 @@
  * Contains farm_import_kml.module.
  */
 
+declare(strict_types=1);
+
 use Drupal\Core\Routing\RouteMatchInterface;
 
 /**

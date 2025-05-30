@@ -5,6 +5,8 @@
  * Post update hooks for the farm_birth module.
  */
 
+declare(strict_types=1);
+
 /**
  * Override the birth log asset label and description.
  */

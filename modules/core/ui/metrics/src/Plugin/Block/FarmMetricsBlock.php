@@ -1,22 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_ui_metrics\Plugin\Block;
 
+use Drupal\Core\Block\Attribute\Block;
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides a 'Metrics' block.
- *
- * @Block(
- *   id = "farm_metrics_block",
- *   admin_label = @Translation("Farm Metrics")
- * )
  */
+#[Block(
+  id: 'farm_metrics_block',
+  admin_label: new TranslatableMarkup('Farm Metrics'),
+)]
 class FarmMetricsBlock extends BlockBase implements ContainerFactoryPluginInterface {
 
   /**

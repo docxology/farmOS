@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\farm_quick_birth\Kernel;
 
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Tests\farm_quick\Kernel\QuickFormTestBase;
 use Drupal\asset\Entity\Asset;
+use Drupal\farm_id_tag\Plugin\Field\FieldType\IdTagItem;
 use Drupal\log\Entity\Log;
 use Drupal\taxonomy\Entity\Term;
 
@@ -40,6 +43,7 @@ class QuickBirthTest extends QuickFormTestBase {
    * {@inheritdoc}
    */
   protected static $modules = [
+    'entity_reference_validators',
     'farm_animal',
     'farm_animal_type',
     'farm_birth',
@@ -69,6 +73,7 @@ class QuickBirthTest extends QuickFormTestBase {
       'farm_land',
       'farm_observation',
       'farm_quantity_standard',
+      'farm_unit',
     ]);
   }
 
@@ -204,9 +209,11 @@ class QuickBirthTest extends QuickFormTestBase {
     $this->assertEquals($breed2->id(), $child1->get('animal_type')->target_id);
     $this->assertEquals($today->getTimestamp(), $child1->get('birthdate')->value);
     $this->assertEquals('F', $child1->get('sex')->value);
-    $this->assertEquals('ear_tag', $child1->get('id_tag')[0]->type);
-    $this->assertEquals('123', $child1->get('id_tag')[0]->id);
-    $this->assertEquals('Left ear', $child1->get('id_tag')[0]->location);
+    $id_tag = $child1->get('id_tag')->first();
+    $this->assertInstanceOf(IdTagItem::class, $id_tag);
+    $this->assertEquals('ear_tag', $id_tag->type);
+    $this->assertEquals('123', $id_tag->id);
+    $this->assertEquals('Left ear', $id_tag->location);
     $parents = $child1->get('parent')->referencedEntities();
     $this->assertCount(2, $parents);
     $this->assertEquals($genetic_mother->id(), $parents[0]->id());
@@ -254,9 +261,9 @@ class QuickBirthTest extends QuickFormTestBase {
     $this->assertEquals($child1->id(), $birth_log->get('asset')->referencedEntities()[0]->id());
     $this->assertEquals($child2->id(), $birth_log->get('asset')->referencedEntities()[1]->id());
     $this->assertEquals($birth_mother->id(), $birth_log->get('mother')->referencedEntities()[0]->id());
-    $this->assertEquals($location->id(), $birth_log->get('location')[0]->target_id);
+    $this->assertEquals($location->id(), $birth_log->get('location')->referencedEntities()[0]->id());
     $this->assertEquals(TRUE, $birth_log->get('is_movement')->value);
-    $this->assertEquals($group->id(), $birth_log->get('group')[0]->target_id);
+    $this->assertEquals($group->id(), $birth_log->get('group')->referencedEntities()[0]->id());
     $this->assertEquals(TRUE, $birth_log->get('is_group_assignment')->value);
     $this->assertEquals('done', $birth_log->get('status')->value);
     $this->assertEquals('Birth notes', $birth_log->get('notes')->value);

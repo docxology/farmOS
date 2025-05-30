@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\farm_group\Functional;
 
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
@@ -64,7 +66,7 @@ class GroupTest extends WebDriverTestBase {
     $this->assertFalse($group_field->isVisible());
 
     // Make the log a group assignment.
-    $log->is_group_assignment = TRUE;
+    $log->set('is_group_assignment', TRUE);
     $log->save();
 
     // Go back to the edit form.

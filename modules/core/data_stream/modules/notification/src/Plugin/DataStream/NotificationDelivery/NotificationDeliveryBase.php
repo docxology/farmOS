@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\data_stream_notification\Plugin\DataStream\NotificationDelivery;
 
 use Drupal\Core\Form\FormStateInterface;

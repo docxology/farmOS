@@ -1,17 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_ui_dashboard_test\Plugin\Block;
 
+use Drupal\Core\Block\Attribute\Block;
 use Drupal\Core\Block\BlockBase;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 
 /**
  * Provides a dashboard test block.
- *
- * @Block(
- *   id = "dashboard_test_block",
- *   admin_label = @Translation("Dashboard test block")
- * )
  */
+#[Block(
+  id: 'dashboard_test_block',
+  admin_label: new TranslatableMarkup('Dashboard test block'),
+)]
 class DashboardTestBlock extends BlockBase {
 
   /**

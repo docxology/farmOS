@@ -5,6 +5,8 @@
  * Provides Views data for farm_entity_views.module.
  */
 
+declare(strict_types=1);
+
 /**
  * Implements hook_views_data_alter().
  */

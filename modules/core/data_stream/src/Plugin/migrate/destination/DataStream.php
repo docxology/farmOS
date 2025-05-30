@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\data_stream\Plugin\migrate\destination;
 
+use Drupal\migrate\Attribute\MigrateDestination;
 use Drupal\migrate\Plugin\migrate\destination\EntityContentBase;
 use Drupal\migrate\Row;
 
@@ -13,11 +16,14 @@ use Drupal\migrate\Row;
  * no concept of data streams in farmOS 1.x. When creating a data stream from a
  * sensor asset, we need to reference the asset at this time.
  *
- * @MigrateDestination(
- *   id = "data_stream",
- *   provider = "data_stream"
- * )
+ * @deprecated in farm:3.4.0 and is removed from farm:4.0.0. Support for farmOS
+ *   v1 migrations was dropped in farmOS 3.x.
+ * @see https://www.drupal.org/project/farm/issues/3498067
+ * @see https://www.drupal.org/project/farm/issues/3382616
  */
+#[MigrateDestination(
+  id: 'data_stream',
+)]
 class DataStream extends EntityContentBase {
 
   /**
@@ -44,13 +50,13 @@ class DataStream extends EntityContentBase {
     if ($row->hasDestinationProperty('providing_asset')) {
       $providing_asset = $row->getDestinationProperty('providing_asset');
 
-      /** @var \Drupal\asset\Entity\AssetInterface $asset */
+      /** @var \Drupal\asset\Entity\AssetInterface|null $asset */
       $asset = $this->storage->load($providing_asset);
 
       // Update the assets data_stream field if the asset was found
       // and the asset type has the field.
       if (!is_null($asset) && $asset->hasField('data_stream')) {
-        $asset->data_stream[] = $entity->id();
+        $asset->get('data_stream')->appendItem($entity->id());
         $asset->save();
       }
     }

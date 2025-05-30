@@ -5,8 +5,11 @@
  * Contains farm_log.module.
  */
 
+declare(strict_types=1);
+
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\log\Entity\LogInterface;
 
 /**
  * Implements hook_entity_prepare_form().
@@ -19,7 +22,10 @@ function farm_log_entity_prepare_form(EntityInterface $entity, $operation, FormS
   }
 
   // If the entity is not a log, bail.
-  if ($entity->getEntityTypeId() !== 'log') {
+  if (
+    $entity->getEntityTypeId() !== 'log' ||
+    !$entity instanceof LogInterface
+  ) {
     return;
   }
 
@@ -36,8 +42,6 @@ function farm_log_entity_prepare_form(EntityInterface $entity, $operation, FormS
     // because those throw a client error if the parameter is not the expected
     // cardinality (single value vs array of values).
     $asset_ids = (array) $query->all()['asset'];
-
-    /** @var \Drupal\Core\Field\EntityReferenceFieldItemList $asset_field */
     $asset_field = $entity->get('asset');
 
     // Add each asset the user has view access to.

@@ -1,21 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_inventory\Plugin\Field\FieldFormatter;
 
+use Drupal\Core\Field\Attribute\FieldFormatter;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\FormatterBase;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 
 /**
  * Plugin implementation of the 'inventory' formatter.
- *
- * @FieldFormatter(
- *   id = "inventory",
- *   label = @Translation("Inventory"),
- *   field_types = {
- *     "inventory"
- *   }
- * )
  */
+#[FieldFormatter(
+  id: 'inventory',
+  label: new TranslatableMarkup('Inventory'),
+  field_types: ['inventory'],
+)]
 class InventoryFormatter extends FormatterBase {
 
   /**
@@ -24,6 +25,7 @@ class InventoryFormatter extends FormatterBase {
   public function viewElements(FieldItemListInterface $items, $langcode) {
     $elements = [];
 
+    /** @var \Drupal\farm_inventory\Plugin\Field\FieldType\InventoryItem $item */
     foreach ($items as $delta => $item) {
       $summary = $item->value;
       if (!empty($item->units)) {

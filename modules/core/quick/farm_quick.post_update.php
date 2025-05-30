@@ -5,6 +5,8 @@
  * Post update hooks for the farmOS Quick Form module.
  */
 
+declare(strict_types=1);
+
 /**
  * Install the new quick_form entity type.
  */

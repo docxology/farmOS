@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_timeline\TypedData;
 
 use Drupal\Core\StringTranslation\StringTranslationTrait;
@@ -18,7 +20,7 @@ class TimelineRowDefinition extends ComplexDataDefinitionBase {
    * {@inheritdoc}
    */
   public function getPropertyDefinitions() {
-    if (!isset($this->propertyDefinitions)) {
+    if (empty($this->propertyDefinitions)) {
 
       $this->propertyDefinitions['id'] = DataDefinition::create('string')
         ->setLabel($this->t('ID'))

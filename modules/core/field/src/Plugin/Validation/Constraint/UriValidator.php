@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_field\Plugin\Validation\Constraint;
 
 use Symfony\Component\Validator\Constraint;
@@ -22,6 +24,11 @@ class UriValidator extends ConstraintValidator {
 
     // Require a scheme.
     if (!str_contains($value->value, ':')) {
+      // PHPStan level 2+ throws the following error on the next line:
+      // Access to an undefined property
+      // Symfony\Component\Validator\Constraint::$message.
+      // We ignore this because we are following Drupal core's pattern.
+      // @phpstan-ignore property.notFound
       $this->context->addViolation($constraint->message);
     }
 
@@ -110,6 +117,11 @@ class UriValidator extends ConstraintValidator {
         (?:\# (?:[A-Za-z0-9\-._~!$&'()*+,;=:@\/?]|%[0-9A-Fa-f]{2})* )?
       )$/x";
     if (!preg_match($regex, $value->value)) {
+      // PHPStan level 2+ throws the following error on the next line:
+      // Access to an undefined property
+      // Symfony\Component\Validator\Constraint::$message.
+      // We ignore this because we are following Drupal core's pattern.
+      // @phpstan-ignore property.notFound
       $this->context->addViolation($constraint->message);
     }
   }

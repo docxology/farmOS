@@ -5,6 +5,8 @@
  * General functions for the farmOS installation profile.
  */
 
+declare(strict_types=1);
+
 /**
  * Define farmOS modules that can be installed.
  *

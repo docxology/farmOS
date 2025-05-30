@@ -5,6 +5,8 @@
  * The farm_ui_dashboard_test module.
  */
 
+declare(strict_types=1);
+
 /**
  * Implements hook_farm_dashboard_panes().
  */

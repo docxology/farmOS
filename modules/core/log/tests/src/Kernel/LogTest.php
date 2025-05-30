@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\farm_log\Kernel;
 
 use Drupal\KernelTests\KernelTestBase;
@@ -82,15 +84,15 @@ class LogTest extends KernelTestBase {
 
     // Set the timestamp of one log to the future.
     $now = \Drupal::time()->getRequestTime();
-    $foo_log->timestamp = $now + 86400;
+    $foo_log->set('timestamp', $now + 86400);
     $foo_log->save();
 
     // Test that results can be filtered by timestamp.
     $log_ids = $this->logQueryFactory->getQuery(['timestamp' => $now])->accessCheck(FALSE)->execute();
     $this->assertNotContains($foo_log->id(), $log_ids, 'Log query results can be filtered by timestamp.');
 
-    // Set the status of one log to complete.
-    $bar_log->status = 'complete';
+    // Set the status of one log to "done".
+    $bar_log->set('status', 'done');
     $bar_log->save();
 
     // Test that results can be filtered by status.
@@ -98,7 +100,7 @@ class LogTest extends KernelTestBase {
     $this->assertNotContains($bar_log->id(), $log_ids, 'Log query results can be filtered by status.');
 
     // Reference the asset in one of the logs.
-    $foo_log->asset[] = $asset;
+    $foo_log->get('asset')->appendItem($asset);
     $foo_log->save();
 
     // Test that results can be filtered by asset reference.
@@ -108,9 +110,9 @@ class LogTest extends KernelTestBase {
 
     // Set the timestamps of both logs to now.
     $now = \Drupal::time()->getRequestTime();
-    $foo_log->timestamp = $now;
+    $foo_log->set('timestamp', $now);
     $foo_log->save();
-    $bar_log->timestamp = $now;
+    $bar_log->set('timestamp', $now);
     $bar_log->save();
 
     // Test that logs with the same timestamp are sorted by ID descending.
@@ -119,7 +121,7 @@ class LogTest extends KernelTestBase {
 
     // Set the timestamp of one log to the future.
     $now = \Drupal::time()->getRequestTime();
-    $foo_log->timestamp = $now + 86400;
+    $foo_log->set('timestamp', $now + 86400);
     $foo_log->save();
 
     // Test that logs are sorted by timestamp descending.

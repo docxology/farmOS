@@ -5,6 +5,8 @@
  * The farmOS Flags module.
  */
 
+declare(strict_types=1);
+
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
@@ -190,7 +192,6 @@ function template_preprocess_field__flag(array &$variables) {
  * Implements hook_entity_type_build().
  */
 function farm_flag_entity_type_build(array &$entity_types) {
-  /** @var \Drupal\Core\Entity\EntityTypeInterface[] $entity_types */
 
   // Enable the entity flag action on entity types with a flag field.
   foreach (['asset', 'log', 'plan'] as $entity_type) {
@@ -202,4 +203,11 @@ function farm_flag_entity_type_build(array &$entity_types) {
       $entity_types[$entity_type]->setFormClass('flag-action-form', EntityFlagActionForm::class);
     }
   }
+}
+
+/**
+ * Implements hook_farm_api_allow_resource_types().
+ */
+function farm_flag_farm_api_allow_resource_types() {
+  return ['flag'];
 }

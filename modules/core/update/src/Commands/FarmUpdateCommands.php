@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_update\Commands;
 
 use Drupal\farm_update\FarmUpdateInterface;

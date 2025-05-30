@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\data_stream\Entity;
 
 use Drupal\Core\Entity\ContentEntityBase;
@@ -81,7 +83,6 @@ class DataStream extends ContentEntityBase implements DataStreamInterface {
    * {@inheritdoc}
    */
   public function getPlugin() {
-    /** @var \Drupal\data_stream\Plugin\DataStream\DataStreamType\DataStreamTypeInterface $plugin */
     return \Drupal::service('plugin.manager.data_stream_type')->createInstance($this->bundle());
   }
 
@@ -154,7 +155,7 @@ class DataStream extends ContentEntityBase implements DataStreamInterface {
    *   A new unique key.
    */
   public static function createUniqueKey() {
-    return hash('md5', mt_rand());
+    return hash('md5', (string) mt_rand());
   }
 
   /**

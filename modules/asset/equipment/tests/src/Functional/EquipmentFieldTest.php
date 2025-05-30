@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\farm_equipment\Functional;
 
 use Drupal\Core\StringTranslation\StringTranslationTrait;
@@ -65,7 +67,7 @@ class EquipmentFieldTest extends FarmBrowserTestBase {
 
     // Create a log that references the equipment.
     $log = $log_storage->create(['type' => 'test']);
-    $log->equipment[] = ['target_id' => $asset->id()];
+    $log->get('equipment')->appendItem($asset->id());
     $log->save();
 
     // Go to the log view page.

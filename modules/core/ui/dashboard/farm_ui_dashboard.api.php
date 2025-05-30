@@ -9,6 +9,8 @@
  * Drupal manner.
  */
 
+declare(strict_types=1);
+
 /**
  * @addtogroup hooks
  * @{

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_role_account_admin;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
@@ -74,7 +76,7 @@ class AccountAdminPermissions implements ContainerInjectionInterface {
 
         // Do not allow assigning the "Account Admin" role if
         // allow_peer_role_assignment is disabled.
-        if ($role->id() == 'farm_account_admin' && !$settings->get('allow_peer_role_assignment', FALSE)) {
+        if ($role->id() == 'farm_account_admin' && !$settings->get('allow_peer_role_assignment')) {
           continue;
         }
 

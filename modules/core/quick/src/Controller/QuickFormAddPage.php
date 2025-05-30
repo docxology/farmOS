@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_quick\Controller;
 
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Link;
+use Drupal\farm_quick\Plugin\QuickForm\ConfigurableQuickFormInterface;
 use Drupal\farm_quick\QuickFormPluginManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -54,7 +57,7 @@ class QuickFormAddPage extends ControllerBase {
 
     // Filter to configurable quick form plugins.
     $plugins = array_filter($this->quickFormPluginManager->getDefinitions(), function (array $plugin) {
-      if (($instance = $this->quickFormPluginManager->createInstance($plugin['id'])) && $instance->isConfigurable()) {
+      if ($this->quickFormPluginManager->createInstance($plugin['id']) instanceof ConfigurableQuickFormInterface) {
         return TRUE;
       }
       return FALSE;
@@ -67,8 +70,8 @@ class QuickFormAddPage extends ControllerBase {
     // Add link for each configurable plugin.
     foreach ($plugins as $plugin_id => $plugin) {
       $render['#bundles'][$plugin_id] = [
-        'label' => Html::escape($plugin['label']),
-        'description' => Html::escape($plugin['description']) ?? '',
+        'label' => Html::escape($plugin['label'] ?? ''),
+        'description' => Html::escape($plugin['description'] ?? ''),
         'add_link' => Link::createFromRoute($plugin['label'], 'farm_quick.add_form', ['plugin' => $plugin_id]),
       ];
     }

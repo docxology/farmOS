@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\farm_import_csv\Kernel;
 
 use Drupal\asset\Entity\Asset;
 use Drupal\log\Entity\Log;
 use Drupal\taxonomy\Entity\Term;
+use Drupal\text\Plugin\Field\FieldType\TextLongItem;
 
 /**
  * Tests for log CSV importers.
@@ -111,6 +114,7 @@ class LogCsvImportTest extends CsvImportTestBase {
           'Category 1',
         ],
         'status' => 'done',
+        'test_string' => 'foo',
       ],
       2 => [
         'name' => 'Harvest potatoes',
@@ -135,6 +139,7 @@ class LogCsvImportTest extends CsvImportTestBase {
           'Category 2',
         ],
         'status' => 'done',
+        'test_string' => 'bar',
       ],
       3 => [
         'name' => 'Harvest onions',
@@ -150,6 +155,7 @@ class LogCsvImportTest extends CsvImportTestBase {
         'notes' => 'Small bulbs from weed pressure',
         'categories' => [],
         'status' => 'pending',
+        'test_string' => 'baz',
       ],
     ];
     foreach ($logs as $id => $log) {
@@ -171,13 +177,15 @@ class LogCsvImportTest extends CsvImportTestBase {
       $this->assertEquals($expected_values[$id]['quantity']['label'], $log->get('quantity')->referencedEntities()[0]->get('label')->value);
       $this->assertEquals($expected_values[$id]['timestamp'], $log->get('timestamp')->value);
       $this->assertEquals($expected_values[$id]['notes'], $log->get('notes')->value);
-      $this->assertEquals('default', $log->get('notes')->format);
+      $this->assertInstanceOf(TextLongItem::class, $log->get('notes')->first());
+      $this->assertEquals('default', $log->get('notes')->first()->format);
       if (!empty($expected_values[$id]['categories'])) {
         foreach ($log->get('category')->referencedEntities() as $category) {
           $this->assertTRUE(in_array($category->label(), $expected_values[$id]['categories']));
         }
       }
       $this->assertEquals($expected_values[$id]['status'], $log->get('status')->value);
+      $this->assertEquals($expected_values[$id]['test_string'], $log->get('test_string')->value);
       $this->assertEquals('Imported via CSV.', $log->getRevisionLogMessage());
     }
 

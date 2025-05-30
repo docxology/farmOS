@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\farm_inventory\Kernel;
 
 use Drupal\KernelTests\KernelTestBase;
@@ -304,9 +306,9 @@ class InventoryTest extends KernelTestBase {
     }
 
     // Create a series of inventory adjustment logs.
-    $this->adjustInventory($asset, 'reset', 1, '', 0, $timestamps[0]);
-    $this->adjustInventory($asset, 'increment', 99, '', 0, $timestamps[1]);
-    $this->adjustInventory($asset, 'decrement', 10, '', 0, $timestamps[2]);
+    $this->adjustInventory($asset, 'reset', '1', '', 0, $timestamps[0]);
+    $this->adjustInventory($asset, 'increment', '99', '', 0, $timestamps[1]);
+    $this->adjustInventory($asset, 'decrement', '10', '', 0, $timestamps[2]);
 
     // Confirm that the inventory is zero before all adjustments.
     $timestamp = $now - 86400;
@@ -338,7 +340,7 @@ class InventoryTest extends KernelTestBase {
    *   The value of the adjustment.
    * @param string $measure
    *   The quantity measure of the inventory. See quantity_measures().
-   * @param int $units
+   * @param string|int|null $units
    *   The quantity units of the inventory (term ID).
    * @param int|null $timestamp
    *   Optionally specify the timestamp when the adjustment occured.
@@ -347,7 +349,7 @@ class InventoryTest extends KernelTestBase {
    * @return \Drupal\log\Entity\LogInterface
    *   The log entity.
    */
-  protected function adjustInventory(AssetInterface $asset, string $adjustment, string $value, string $measure = '', int $units = 0, $timestamp = NULL) {
+  protected function adjustInventory(AssetInterface $asset, string $adjustment, string $value, string $measure = '', string|int|null $units = NULL, $timestamp = NULL) {
     $fraction = Fraction::createFromDecimal($value);
     /** @var \Drupal\quantity\Entity\Quantity $quantity */
     $quantity = Quantity::create([

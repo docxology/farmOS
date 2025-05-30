@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\farm_quick\Kernel;
 
 use Drupal\Core\Form\FormState;
@@ -27,21 +29,21 @@ abstract class QuickFormTestBase extends KernelTestBase {
   /**
    * Asset entity storage.
    *
-   * @var \Drupal\Core\Entity\EntityStorageInterface
+   * @var \Drupal\asset\AssetStorage
    */
   protected $assetStorage;
 
   /**
    * Log entity storage.
    *
-   * @var \Drupal\Core\Entity\EntityStorageInterface
+   * @var \Drupal\log\LogStorage
    */
   protected $logStorage;
 
   /**
    * Taxonomy term entity storage.
    *
-   * @var \Drupal\Core\Entity\EntityStorageInterface
+   * @var \Drupal\taxonomy\TermStorageInterface
    */
   protected $termStorage;
 
@@ -107,6 +109,7 @@ abstract class QuickFormTestBase extends KernelTestBase {
     $this->installConfig([
       'farm_format',
       'farm_location',
+      'farm_log_asset',
       'system',
     ]);
   }
@@ -120,6 +123,11 @@ abstract class QuickFormTestBase extends KernelTestBase {
   protected function submitQuickForm(array $values = []) {
     $form_arg = '\Drupal\farm_quick\Form\QuickForm';
     $form_state = (new FormState())->setValues($values);
+    // PHPStan level 2+ throws the following error on the next line:
+    // Method Drupal\Core\Form\FormBuilderInterface::submitForm() invoked with
+    // 3 parameters, 2 required.
+    // We ignore this because we are following Drupal core's pattern.
+    // @phpstan-ignore arguments.count
     \Drupal::formBuilder()->submitForm($form_arg, $form_state, $this->quickFormId);
   }
 

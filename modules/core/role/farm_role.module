@@ -5,6 +5,8 @@
  * Hooks implemented by the Farm Role module.
  */
 
+declare(strict_types=1);
+
 use Drupal\Core\Form\FormStateInterface;
 
 /**

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_quick_planting\Plugin\QuickForm;
 
 use Drupal\Core\Datetime\DrupalDateTime;
@@ -425,7 +427,6 @@ class Planting extends QuickFormBase {
     }
 
     // Get the crop/variety names.
-    /** @var \Drupal\taxonomy\TermInterface[] $crops */
     $crops = $form_state->getValue('crops') ?? [];
     $crop_names = [];
     foreach ($crops as $crop) {

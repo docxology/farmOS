@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\farm_quick_group\Kernel;
 
 use Drupal\Core\Datetime\DrupalDateTime;
@@ -25,9 +27,11 @@ class QuickGroupTest extends QuickFormTestBase {
    */
   protected static $modules = [
     'farm_equipment',
+    'farm_equipment_type',
     'farm_group',
     'farm_observation',
     'farm_quick_group',
+    'taxonomy',
   ];
 
   /**
@@ -36,6 +40,7 @@ class QuickGroupTest extends QuickFormTestBase {
   protected function setUp(): void {
     parent::setUp();
     $this->installConfig([
+      'farm_equipment_type',
       'farm_equipment',
       'farm_group',
       'farm_observation',

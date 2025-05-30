@@ -5,6 +5,8 @@
  * Post update hooks for the farm_lab_test module.
  */
 
+declare(strict_types=1);
+
 use Drupal\Core\Utility\UpdateException;
 use Drupal\farm_lab_test\Entity\FarmLabTestType;
 use Drupal\taxonomy\Entity\Term;
@@ -130,7 +132,7 @@ function farm_lab_test_post_update_migrate_lab_terms(&$sandbox) {
 
     // If the log didn't load, throw an update exception.
     if (empty($log)) {
-      throw new UpdateException('Could not load log. ID: @id', ['@id' => $id]);
+      throw new UpdateException('Could not load log. ID: ' . $id);
     }
 
     // Assign the new lab taxonomy term.
@@ -138,7 +140,7 @@ function farm_lab_test_post_update_migrate_lab_terms(&$sandbox) {
 
     // Save a new revision of the log.
     $log->setNewRevision(TRUE);
-    $log->setRevisionLogMessage(t('Automatically migrated laboratory name to taxonomy term in the new Lab vocabulary.'));
+    $log->setRevisionLogMessage(t('Automatically migrated laboratory name to taxonomy term in the new Lab vocabulary.')->render());
     $log->save();
 
     // Declare that the log has been fixed.

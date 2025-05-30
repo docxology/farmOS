@@ -5,6 +5,8 @@
  * Install, update and uninstall functions for the farm_entity_fields module.
  */
 
+declare(strict_types=1);
+
 use Drupal\Core\Database\DatabaseExceptionWrapper;
 
 /**

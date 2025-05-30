@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_ui_theme\Form;
 
 use Drupal\Core\Entity\EntityConstraintViolationListInterface;
@@ -36,6 +38,7 @@ class TaxonomyTermForm extends GinContentFormBase {
     $form = parent::form($form, $form_state);
 
     // Term relations logic copied from Drupal\taxonomy\TermForm::form.
+    /** @var \Drupal\taxonomy\TermInterface $term */
     $term = $this->entity;
     $vocab_storage = $this->entityTypeManager->getStorage('taxonomy_vocabulary');
     /** @var \Drupal\taxonomy\TermStorageInterface $taxonomy_storage */
@@ -116,13 +119,14 @@ class TaxonomyTermForm extends GinContentFormBase {
    * {@inheritdoc}
    */
   public function buildEntity(array $form, FormStateInterface $form_state) {
+    /** @var \Drupal\taxonomy\TermInterface $term */
     $term = parent::buildEntity($form, $form_state);
 
     // Prevent leading and trailing spaces in term names.
     $term->setName(trim($term->getName()));
 
     // Assign parents with proper delta values starting from 0.
-    $term->parent = array_values($form_state->getValue('parent'));
+    $term->set('parent', array_values($form_state->getValue('parent')));
 
     return $term;
   }
@@ -165,6 +169,7 @@ class TaxonomyTermForm extends GinContentFormBase {
     $parent = [];
     // Get the parent directly from the term as
     // \Drupal\taxonomy\TermStorageInterface::loadParents() excludes the root.
+    /** @var \Drupal\Core\Field\Plugin\Field\FieldType\EntityReferenceItem $item */
     foreach ($term->get('parent') as $item) {
       $parent[] = (int) $item->target_id;
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_birth\EventSubscriber;
 
 use Drupal\Core\Messenger\MessengerInterface;
@@ -37,7 +39,7 @@ class LogEventSubscriber implements EventSubscriberInterface {
    * @return array
    *   The event names to listen for, and the methods that should be executed.
    */
-  public static function getSubscribedEvents() {
+  public static function getSubscribedEvents(): array {
     return [
       LogEvent::INSERT => 'syncBirthChildren',
       LogEvent::UPDATE => 'syncBirthChildren',
@@ -61,7 +63,7 @@ class LogEventSubscriber implements EventSubscriberInterface {
     }
 
     // Load mother asset.
-    /** @var \Drupal\asset\Entity\AssetInterface $mother */
+    /** @var \Drupal\asset\Entity\AssetInterface[] $mothers */
     $mothers = $log->get('mother')->referencedEntities();
     $mother = reset($mothers);
 
@@ -89,7 +91,7 @@ class LogEventSubscriber implements EventSubscriberInterface {
         $message = $this->t('<a href=":child_url">%child_name</a> date of birth was updated to match their birth log.', $args);
         $this->messenger->addMessage($message);
         $revision_log[] = $message;
-        $child->birthdate = $log->get('timestamp')->value;
+        $child->set('birthdate', $log->get('timestamp')->value);
         $save = TRUE;
       }
 
@@ -107,7 +109,7 @@ class LogEventSubscriber implements EventSubscriberInterface {
           $message = $this->t('<a href=":mother_url">%mother_name</a> added as a parent of <a href=":child_url">%child_name</a>.', $args);
           $this->messenger->addMessage($message);
           $revision_log[] = $message;
-          $child->parent[] = ['target_id' => $mother->id()];
+          $child->get('parent')->appendItem($mother->id());
           $save = TRUE;
         }
       }

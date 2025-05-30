@@ -5,6 +5,8 @@
  * Install, update and uninstall function for the farm_fieldkit module.
  */
 
+declare(strict_types=1);
+
 use Drupal\consumers\Entity\Consumer;
 use Drupal\simple_oauth\Oauth2ScopeInterface;
 

@@ -5,6 +5,8 @@
  * Post update hooks for the quantity module.
  */
 
+declare(strict_types=1);
+
 use Drupal\Core\Entity\Entity\EntityViewMode;
 use Drupal\system\Entity\Action;
 

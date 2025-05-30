@@ -1,18 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_ui_theme\Plugin\Block;
 
 use Drupal\Component\Utility\SortArray;
+use Drupal\Core\Block\Attribute\Block;
 use Drupal\Core\Menu\Plugin\Block\LocalActionsBlock;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 
 /**
  * Provides a block to display the local actions.
- *
- * @Block(
- *   id = "farm_local_actions_block",
- *   admin_label = @Translation("Primary farm admin actions")
- * )
  */
+#[Block(
+  id: 'farm_local_actions_block',
+  admin_label: new TranslatableMarkup('Primary farm admin actions'),
+)]
 class FarmLocalActionsBlock extends LocalActionsBlock {
 
   /**

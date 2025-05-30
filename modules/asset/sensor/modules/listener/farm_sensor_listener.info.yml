@@ -4,5 +4,6 @@ type: module
 package: farmOS (Legacy)
 core_version_requirement: ^10
 dependencies:
-  - farm:farm_sensor
   - farm:data_stream
+  - farm:farm_entity
+  - farm:farm_sensor

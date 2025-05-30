@@ -1,18 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_birth\Plugin\Validation\Constraint;
 
-use Symfony\Component\Validator\Constraint;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Drupal\Core\Validation\Attribute\Constraint;
+use Symfony\Component\Validator\Constraint as SymfonyConstraint;
 
 /**
  * Checks that only one birth log references an asset.
- *
- * @Constraint(
- *   id = "UniqueBirthLog",
- *   label = @Translation("Unique birth log", context = "Validation"),
- * )
  */
-class UniqueBirthLogConstraint extends Constraint {
+#[Constraint(
+  id: 'UniqueBirthLog',
+  label: new TranslatableMarkup('Unique birth log', ['context' => 'Validation']),
+)]
+class UniqueBirthLogConstraint extends SymfonyConstraint {
 
   /**
    * The default violation message.

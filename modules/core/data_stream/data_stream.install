@@ -5,6 +5,8 @@
  * Install, update and uninstall functions for the data_stream module.
  */
 
+declare(strict_types=1);
+
 /**
  * Implements hook_schema().
  */

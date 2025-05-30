@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_sensor\Plugin\Asset\AssetType;
 
 use Drupal\data_stream\Entity\DataStream;

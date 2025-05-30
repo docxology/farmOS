@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_kml\Normalizer;
 
 use Drupal\farm_geo\GeometryWrapper;
@@ -44,7 +46,7 @@ class KmlNormalizer implements NormalizerInterface, DenormalizerInterface {
   /**
    * {@inheritdoc}
    */
-  public function normalize($object, $format = NULL, array $context = []) {
+  public function normalize($object, $format = NULL, array $context = []): array|bool|string|int|float|null|\ArrayObject {
 
     /** @var \Drupal\farm_geo\GeometryWrapper $object */
     // Convert the geometry to KML.
@@ -83,7 +85,7 @@ class KmlNormalizer implements NormalizerInterface, DenormalizerInterface {
   /**
    * {@inheritdoc}
    */
-  public function supportsNormalization($data, $format = NULL) {
+  public function supportsNormalization($data, $format = NULL): bool {
     return $data instanceof GeometryWrapper && $format == static::FORMAT;
   }
 
@@ -134,7 +136,7 @@ class KmlNormalizer implements NormalizerInterface, DenormalizerInterface {
   /**
    * {@inheritdoc}
    */
-  public function supportsDenormalization($data, $type, $format = NULL) {
+  public function supportsDenormalization($data, $type, $format = NULL): bool {
     return $type === static::TYPE && $format === static::FORMAT;
   }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_id_tag\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBase;

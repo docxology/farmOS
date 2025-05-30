@@ -1,24 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_map\Plugin\Field\FieldFormatter;
 
+use Drupal\Core\Field\Attribute\FieldFormatter;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\FormatterBase;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\geofield\GeoPHP\GeoPHPInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Plugin implementation of the map 'geofield' formatter.
- *
- * @FieldFormatter(
- *   id = "farm_map_geofield",
- *   label = @Translation("farmOS Map"),
- *   field_types = {
- *     "geofield"
- *   }
- * )
  */
+#[FieldFormatter(
+  id: 'farm_map_geofield',
+  label: new TranslatableMarkup('farmOS Map'),
+  field_types: ['geofield'],
+)]
 class GeofieldFormatter extends FormatterBase {
 
   /**

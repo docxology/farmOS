@@ -9,6 +9,10 @@
  * Drupal manner.
  */
 
+declare(strict_types=1);
+
+use Drupal\Core\Entity\EntityTypeInterface;
+
 /**
  * @addtogroup hooks
  * @{
@@ -27,7 +31,7 @@
  * @return \Drupal\entity\BundleFieldDefinition[]
  *   Returns an array of BundleFieldDefinition objects.
  */
-function hook_farm_entity_bundle_field_info(\Drupal\Core\Entity\EntityTypeInterface $entity_type, string $bundle) {
+function hook_farm_entity_bundle_field_info(EntityTypeInterface $entity_type, string $bundle) {
   $fields = [];
 
   // Add a new string field to Input Logs.

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_api\Controller;
 
 use Drupal\Core\Extension\ModuleHandlerInterface;
@@ -20,6 +22,12 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @ingroup farm
  *
+ * PHPStan throws the following error on the next line:
+ * Class Drupal\farm_api\Controller\FarmEntryPoint extends @internal class
+ * Drupal\jsonapi\Controller\EntryPoint.
+ * We ignore this because we intentionally extend the core JSON:API controller,
+ * even though it is marked @internal, and take responsibility for it working
+ * correctly.
  * @phpstan-ignore-next-line
  */
 class FarmEntryPoint extends EntryPoint {

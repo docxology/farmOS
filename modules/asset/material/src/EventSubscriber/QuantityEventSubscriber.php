@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_material\EventSubscriber;
 
 use Drupal\quantity\Event\QuantityEvent;
@@ -16,7 +18,7 @@ class QuantityEventSubscriber implements EventSubscriberInterface {
    * @return array
    *   The event names to listen for, and the methods that should be executed.
    */
-  public static function getSubscribedEvents() {
+  public static function getSubscribedEvents(): array {
     return [
       QuantityEvent::PRESAVE => 'quantityPresave',
     ];

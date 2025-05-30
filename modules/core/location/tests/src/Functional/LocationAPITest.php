@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\farm_location\Functional;
 
 use Drupal\Component\Serialization\Json;
@@ -43,6 +45,11 @@ class LocationAPITest extends FarmBrowserTestBase {
     // Setup the request.
     $request_options[RequestOptions::HEADERS]['Accept'] = 'application/vnd.api+json';
     $request_options[RequestOptions::HEADERS]['Content-Type'] = 'application/vnd.api+json';
+    // PHPStan level 2+ throws the following error on the next line:
+    // Binary operation "." between non-falsy-string and
+    // Drupal\Core\Field\FieldItemListInterface results in an error.
+    // We ignore this because we are following Drupal core's pattern.
+    // @phpstan-ignore binaryOp.invalid
     $request_options[RequestOptions::HEADERS]['Authorization'] = 'Basic ' . base64_encode($this->user->name->value . ':' . $this->user->passRaw);
     $asset_uri = "base://api/asset/object";
 

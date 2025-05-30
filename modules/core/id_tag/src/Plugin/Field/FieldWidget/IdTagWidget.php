@@ -1,22 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_id_tag\Plugin\Field\FieldWidget;
 
+use Drupal\Core\Field\Attribute\FieldWidget;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 
 /**
  * Plugin implementation of the 'id tag' widget.
- *
- * @FieldWidget(
- *   id = "id_tag",
- *   label = @Translation("ID tag"),
- *   field_types = {
- *     "id_tag"
- *   }
- * )
  */
+#[FieldWidget(
+  id: 'id_tag',
+  label: new TranslatableMarkup('ID tag'),
+  field_types: ['id_tag'],
+)]
 class IdTagWidget extends WidgetBase {
 
   /**
@@ -36,7 +37,7 @@ class IdTagWidget extends WidgetBase {
     $tag_type = $items[$delta]->type ?? NULL;
 
     // Get the current asset bundle.
-    $bundle = $items->getParent()->getEntity()->bundle();
+    $bundle = $items->getEntity()->bundle();
 
     // Load allowed tag types.
     $tag_types = farm_id_tag_type_options($bundle);

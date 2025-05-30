@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\farm_ui_dashboard\Functional;
 
 use Drupal\Tests\farm_test\Functional\FarmBrowserTestBase;

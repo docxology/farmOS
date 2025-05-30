@@ -1,24 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_quick_movement\Plugin\Field\FieldFormatter;
 
+use Drupal\Core\Field\Attribute\FieldFormatter;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\Url;
 use Drupal\farm_location\Plugin\Field\FieldFormatter\AssetCurrentLocationFormatter;
 
 /**
  * Field formatter for the current location asset field with a move button.
- *
- * @FieldFormatter(
- *   id = "asset_current_location_move",
- *   label = @Translation("Asset current location (with Move button)"),
- *   description = @Translation("Display the label of the referenced entities with a button to move."),
- *   field_types = {
- *     "entity_reference"
- *   }
- * )
  */
+#[FieldFormatter(
+  id: 'asset_current_location_move',
+  label: new TranslatableMarkup('Asset current location (with Move button)'),
+  description: new TranslatableMarkup('Display the label of the referenced entities with a button to move.'),
+  field_types: ['entity_reference'],
+)]
 class AssetCurrentLocationMoveFormatter extends AssetCurrentLocationFormatter {
 
   /**

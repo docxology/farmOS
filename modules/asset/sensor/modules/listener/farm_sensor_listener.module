@@ -5,10 +5,12 @@
  * The farm_sensor_listener module.
  */
 
+declare(strict_types=1);
+
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
-use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Url;
+use Drupal\asset\Entity\AssetInterface;
 use Drupal\data_stream\Entity\DataStream;
 use Drupal\data_stream\Entity\DataStreamInterface;
 
@@ -38,7 +40,7 @@ function farm_sensor_listener_farm_entity_bundle_field_info(EntityTypeInterface 
 /**
  * Implements hook_ENTITY_TYPE_view_alter().
  */
-function farm_sensor_listener_asset_view_alter(array &$build, EntityInterface $asset, EntityViewDisplayInterface $display) {
+function farm_sensor_listener_asset_view_alter(array &$build, AssetInterface $asset, EntityViewDisplayInterface $display) {
 
   // Bail if this is not a sensor asset.
   if ($asset->bundle() != 'sensor') {

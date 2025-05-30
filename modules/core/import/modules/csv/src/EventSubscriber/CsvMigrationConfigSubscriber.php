@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_import_csv\EventSubscriber;
 
 use Drupal\Core\Config\ConfigCrudEvent;
@@ -32,7 +34,7 @@ class CsvMigrationConfigSubscriber implements EventSubscriberInterface {
   /**
    * {@inheritdoc}
    */
-  public static function getSubscribedEvents() {
+  public static function getSubscribedEvents(): array {
     $events[ConfigEvents::SAVE][] = ['rebuildRouter'];
     $events[ConfigEvents::DELETE][] = ['rebuildRouter'];
     return $events;

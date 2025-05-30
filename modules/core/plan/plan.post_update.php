@@ -5,6 +5,8 @@
  * Post update hooks for the plan module.
  */
 
+declare(strict_types=1);
+
 /**
  * Install plan_record and plan_record_type entity types.
  */

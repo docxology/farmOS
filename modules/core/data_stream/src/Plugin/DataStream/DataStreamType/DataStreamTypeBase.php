@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\data_stream\Plugin\DataStream\DataStreamType;
 
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;

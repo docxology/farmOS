@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_entity_bundle_fields_test\Plugin\Plan\PlanType;
 
 use Drupal\entity\BundleFieldDefinition;

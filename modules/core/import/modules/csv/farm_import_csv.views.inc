@@ -5,6 +5,8 @@
  * Provides Views data for the farmOS Import: CSV module.
  */
 
+declare(strict_types=1);
+
 /**
  * Implements hook_views_data().
  */

@@ -5,6 +5,8 @@
  * Post update hooks for the farm_map module.
  */
 
+declare(strict_types=1);
+
 use Drupal\farm_map\Entity\MapBehavior;
 use Drupal\farm_map\Entity\MapType;
 

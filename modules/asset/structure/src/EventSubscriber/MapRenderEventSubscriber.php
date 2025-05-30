@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_structure\EventSubscriber;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -26,7 +28,7 @@ class MapRenderEventSubscriber implements EventSubscriberInterface {
   /**
    * The layer style loader service.
    *
-   * @var \Drupal\farm_map\layerStyleLoader
+   * @var \Drupal\farm_map\LayerStyleLoaderInterface
    */
   protected $layerStyleLoader;
 
@@ -46,7 +48,7 @@ class MapRenderEventSubscriber implements EventSubscriberInterface {
   /**
    * {@inheritdoc}
    */
-  public static function getSubscribedEvents() {
+  public static function getSubscribedEvents(): array {
     return [
       MapRenderEvent::EVENT_NAME => ['onMapRender', -100],
     ];

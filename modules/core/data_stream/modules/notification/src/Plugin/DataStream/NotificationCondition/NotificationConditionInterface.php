@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\data_stream_notification\Plugin\DataStream\NotificationCondition;
 
 use Drupal\Core\Condition\ConditionInterface;

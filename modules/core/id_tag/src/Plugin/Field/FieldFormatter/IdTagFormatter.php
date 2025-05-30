@@ -1,24 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_id_tag\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Field\Attribute\FieldFormatter;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\FormatterBase;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Plugin implementation of the 'id tag' formatter.
- *
- * @FieldFormatter(
- *   id = "id_tag",
- *   label = @Translation("ID tag"),
- *   field_types = {
- *     "id_tag"
- *   }
- * )
  */
+#[FieldFormatter(
+  id: 'id_tag',
+  label: new TranslatableMarkup('ID tag'),
+  field_types: ['id_tag'],
+)]
 class IdTagFormatter extends FormatterBase {
 
   /**

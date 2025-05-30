@@ -5,6 +5,8 @@
  * The farmOS Quick Form module.
  */
 
+declare(strict_types=1);
+
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Form\FormStateInterface;
@@ -102,4 +104,11 @@ function farm_quick_form_alter(&$form, FormStateInterface $form_state, $form_id)
       }
     }
   }
+}
+
+/**
+ * Implements hook_farm_api_allow_resource_types().
+ */
+function farm_quick_farm_api_allow_resource_types() {
+  return ['quick_form'];
 }

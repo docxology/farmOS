@@ -1,7 +1,7 @@
 ##
 # Alias the Drupal base image for use in other build stages.
 # We do this so that the Drupal image version only needs to be updated here.
-FROM drupal:10.3 as baseimage
+FROM drupal:10.4-php8.3 AS baseimage
 
 # Define common paths.
 # BUILD_PATH is where the farmOS codebase will be built.
@@ -15,7 +15,7 @@ ENV DRUPAL_PATH=/opt/drupal
 
 ##
 # Build/install PHP extensions.
-FROM baseimage as php-dependencies
+FROM baseimage AS php-dependencies
 
 # Build and install the GEOS PHP extension.
 # See https://git.osgeo.org/gitea/geos/php-geos
@@ -30,12 +30,12 @@ RUN apt-get update && apt-get install -y libgeos-dev \
     && make install \
     )
 
-# Install the BCMath PHP extension.
-RUN docker-php-ext-install bcmath
+# Install the BCMath and Exif PHP extensions.
+RUN docker-php-ext-install bcmath exif
 
 ##
 # Build common requirements for production and development images.
-FROM baseimage as common
+FROM baseimage AS common
 
 # Set the farmOS and composer project repository URLs and versions.
 ARG FARMOS_REPO=https://github.com/farmOS/farmOS.git
@@ -48,7 +48,7 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 # Enable PHP dependencies.
 COPY --from=php-dependencies /usr/local/lib/php/extensions/ /usr/local/lib/php/extensions/
-RUN docker-php-ext-enable geos bcmath
+RUN docker-php-ext-enable bcmath exif geos
 
 # Add custom PHP configurations.
 COPY conf.d/ /usr/local/etc/php/conf.d
@@ -81,7 +81,7 @@ CMD ["apache2-foreground"]
 
 ##
 # Build the production image.
-FROM common as production
+FROM common AS production
 
 # Build the farmOS codebase in ${BUILD_PATH} with the --no-dev flag.
 # Change the ownership of the sites directory and copy the farmOS codebase into ${DRUPAL_PATH}.
@@ -91,7 +91,7 @@ RUN mkdir ${BUILD_PATH} \
   && rm -r ${DRUPAL_PATH} && cp -rp ${BUILD_PATH} ${DRUPAL_PATH}
 
 ## Build the development image.
-FROM common as dev
+FROM common AS dev
 
 # Install and enable XDebug extension.
 RUN yes | pecl install xdebug \
@@ -119,7 +119,7 @@ USER www-data
 # Build the farmOS codebase in ${BUILD_PATH}.
 RUN /usr/local/bin/build-farmOS.sh
 
-# Add dev configurartions for PHP CodeSniffer and PHPStan.
+# Add dev configurations for PHP CodeSniffer, PHPStan, and Rector.
 COPY --chown=www-data ./dev/files/ ${BUILD_PATH}/
 
 # Configure PHPUnit.

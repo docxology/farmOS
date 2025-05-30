@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_update;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
@@ -113,6 +115,7 @@ class FarmUpdate implements FarmUpdateInterface {
 
       // Get the config type and bail if simple configuration.
       // The lister gives NULL if simple configuration.
+      /** @var string|null $type */
       $type = $this->configList->getTypeNameByConfigName($name);
       if ($type === NULL) {
         continue;
@@ -220,6 +223,7 @@ class FarmUpdate implements FarmUpdateInterface {
   protected function getConfigShortname($type, $name) {
     $shortname = $name;
     if ($type != 'system.simple') {
+      /** @var \Drupal\Core\Config\Entity\ConfigEntityTypeInterface $definition */
       $definition = $this->entityManager->getDefinition($type);
       $prefix = $definition->getConfigPrefix() . '.';
       if (strpos($name, $prefix) === 0) {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\farm_map\Functional;
 
 use Drupal\Core\StringTranslation\StringTranslationTrait;
@@ -34,10 +36,10 @@ class MapFormTest extends FarmBrowserTestBase {
     // are visible, and only the second field's WKT text field is visible.
     $this->drupalGet('quick/test');
     $this->assertSession()->statusCodeEquals(200);
-    $this->assertSession()->pageTextContains($this->t('Geometry 1'));
-    $this->assertSession()->pageTextContains($this->t('Geometry 2'));
-    $this->assertSession()->pageTextNotContains($this->t('Geometry 1 WKT'));
-    $this->assertSession()->pageTextContains($this->t('Geometry 2 WKT'));
+    $this->assertSession()->pageTextContains('Geometry 1');
+    $this->assertSession()->pageTextContains('Geometry 2');
+    $this->assertSession()->pageTextNotContains('Geometry 1 WKT');
+    $this->assertSession()->pageTextContains('Geometry 2 WKT');
 
     // Submit the form with a value for the second geometry.
     $edit = ['geometry2[value]' => 'POINT(-45.967095060886315 32.77503850904169)'];
@@ -63,7 +65,7 @@ class MapFormTest extends FarmBrowserTestBase {
     $this->drupalGet('quick/test');
     $edit = ['geometry2[value]' => 'POLYGON()'];
     $this->submitForm($edit, 'Submit');
-    $this->assertSession()->pageTextContains($this->t('"POLYGON()" is not a valid geospatial content.'));
+    $this->assertSession()->pageTextContains('"POLYGON()" is not a valid geospatial content.');
   }
 
 }

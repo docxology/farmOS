@@ -1,28 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_export_csv\Plugin\Action;
 
+use Drupal\Core\Action\Attribute\Action;
 use Drupal\Core\Action\Plugin\Action\EntityActionBase;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\TempStore\PrivateTempStoreFactory;
+use Drupal\farm_export_csv\Plugin\Action\Derivative\EntityCsvDeriver;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Action that exports a CSV file of entities.
- *
- * @Action(
- *   id = "entity:csv_action",
- *   action_label = @Translation("Export entity as CSV"),
- *   deriver = "Drupal\farm_export_csv\Plugin\Action\Derivative\EntityCsvDeriver",
- * )
  */
+#[Action(
+  id: 'entity:csv_action',
+  action_label: new TranslatableMarkup('Export entity as CSV'),
+  deriver: EntityCsvDeriver::class,
+)]
 class EntityCsv extends EntityActionBase {
 
   /**
-   * The tempstore object.
+   * The private temp store.
    *
-   * @var \Drupal\Core\TempStore\SharedTempStore
+   * @var \Drupal\Core\TempStore\PrivateTempStore
    */
   protected $tempStore;
 

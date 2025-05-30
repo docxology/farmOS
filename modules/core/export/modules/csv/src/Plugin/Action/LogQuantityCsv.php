@@ -1,29 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_export_csv\Plugin\Action;
 
+use Drupal\Core\Action\Attribute\Action;
 use Drupal\Core\Action\Plugin\Action\EntityActionBase;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\TempStore\PrivateTempStoreFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Action that exports a CSV file of log quantities.
- *
- * @Action(
- *   id = "farm_export_csv:log_quantity",
- *   action_label = @Translation("Export Quantities CSV"),
- *   type = "log",
- *   confirm_form_route_name = "entity.quantity.csv_form",
- * )
  */
+#[Action(
+  id: 'farm_export_csv:log_quantity',
+  action_label: new TranslatableMarkup('Export Quantities CSV'),
+  type: 'log',
+  confirm_form_route_name: 'entity.quantity.csv_form',
+)]
 class LogQuantityCsv extends EntityActionBase {
 
   /**
-   * The tempstore object.
+   * The private temp store.
    *
-   * @var \Drupal\Core\TempStore\SharedTempStore
+   * @var \Drupal\Core\TempStore\PrivateTempStore
    */
   protected $tempStore;
 

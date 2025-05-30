@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_map\EventSubscriber;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
@@ -33,7 +35,7 @@ class MapRenderEventSubscriber implements EventSubscriberInterface {
   /**
    * {@inheritdoc}
    */
-  public static function getSubscribedEvents() {
+  public static function getSubscribedEvents(): array {
     return [
       MapRenderEvent::EVENT_NAME => 'onMapRender',
     ];

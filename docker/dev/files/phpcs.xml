@@ -15,6 +15,16 @@
     # @todo https://www.drupal.org/project/coder/issues/2159253
     <exclude name="DrupalPractice.Commenting.CommentEmptyLine.SpacingAfter"/>
   </rule>
+  # @todo https://www.drupal.org/project/coder/issues/3473534
+  <rule ref="SlevomatCodingStandard.TypeHints.DeclareStrictTypes.DeclareStrictTypesMissing">
+    <severity>5</severity>
+  </rule>
+  # @todo https://www.drupal.org/project/coding_standards/issues/1624564
+  <rule ref="SlevomatCodingStandard.Namespaces.AlphabeticallySortedUses">
+    <properties>
+      <property name="caseSensitive" value="true"/>
+    </properties>
+  </rule>
   <rule ref="PHPCompatibility"/>
   <config name="testVersion" value="8.2-"/>
   <rule ref="Internal.Tokenizer.Exception"><severity>0</severity></rule>

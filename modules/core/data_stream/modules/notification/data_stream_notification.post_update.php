@@ -5,6 +5,8 @@
  * Post update functions for Data Stream Notifications module.
  */
 
+declare(strict_types=1);
+
 /**
  * Install farmOS Notifications module.
  */

@@ -5,6 +5,8 @@
  * Hooks and customizations for the farm_update module.
  */
 
+declare(strict_types=1);
+
 /**
  * Implements hook_rebuild().
  */

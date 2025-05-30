@@ -1,14 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_import_csv\EventSubscriber;
 
 use Drupal\Core\Database\Connection;
+use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\TempStore\PrivateTempStoreFactory;
 use Drupal\migrate\Event\MigrateEvents;
 use Drupal\migrate\Event\MigrateImportEvent;
 use Drupal\migrate\Event\MigratePostRowSaveEvent;
+use Drupal\migrate\Plugin\migrate\id_map\Sql;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -32,11 +36,18 @@ class CsvMigrationSubscriber implements EventSubscriberInterface {
   protected $currentUser;
 
   /**
-   * The tempstore service.
+   * The private temp store.
    *
-   * @var \Drupal\Core\TempStore\PrivateTempStoreFactory
+   * @var \Drupal\Core\TempStore\PrivateTempStore
    */
   protected $tempStore;
+
+  /**
+   * The messenger.
+   *
+   * @var \Drupal\Core\Messenger\MessengerInterface
+   */
+  protected $messenger;
 
   /**
    * CsvMigrationSubscriber constructor.
@@ -47,11 +58,14 @@ class CsvMigrationSubscriber implements EventSubscriberInterface {
    *   The current user.
    * @param \Drupal\Core\TempStore\PrivateTempStoreFactory $temp_store_factory
    *   The tempstore service.
+   * @param \Drupal\Core\Messenger\MessengerInterface $messenger
+   *   The messenger.
    */
-  public function __construct(Connection $database, AccountInterface $current_user, PrivateTempStoreFactory $temp_store_factory) {
+  public function __construct(Connection $database, AccountInterface $current_user, PrivateTempStoreFactory $temp_store_factory, MessengerInterface $messenger) {
     $this->database = $database;
     $this->currentUser = $current_user;
     $this->tempStore = $temp_store_factory->get('farm_import_csv');
+    $this->messenger = $messenger;
   }
 
   /**
@@ -59,7 +73,7 @@ class CsvMigrationSubscriber implements EventSubscriberInterface {
    *
    * @inheritdoc
    */
-  public static function getSubscribedEvents() {
+  public static function getSubscribedEvents(): array {
     $events[MigrateEvents::POST_ROW_SAVE][] = ['onMigratePostRowSave'];
     $events[MigrateEvents::POST_IMPORT][] = ['onMigratePostImport'];
     return $events;
@@ -104,8 +118,11 @@ class CsvMigrationSubscriber implements EventSubscriberInterface {
    */
   public function onMigratePostImport(MigrateImportEvent $event) {
 
-    // If this is not a csv_file source migration, bail.
-    if ($event->getMigration()->getSourcePlugin()->getPluginId() != 'csv_file') {
+    // If this is not a SQL or csv_file source migration, bail.
+    if (
+      !$event->getMigration()->getIdMap() instanceof Sql
+      || $event->getMigration()->getSourcePlugin()->getPluginId() != 'csv_file'
+    ) {
       return;
     }
 
@@ -129,7 +146,7 @@ class CsvMigrationSubscriber implements EventSubscriberInterface {
         foreach ($record_numbers as $record_number) {
           $messages = $event->getMigration()->getIdMap()->getMessages(['file_id' => $file_id, 'record_number' => $record_number]);
           foreach ($messages as $message) {
-            $event->logMessage($this->t('Row @rownum: @message', ['@rownum' => $record_number, '@message' => $message->message]), 'warning');
+            $this->messenger->addWarning($this->t('Row @rownum: @message', ['@rownum' => $record_number, '@message' => $message->message])->render());
           }
         }
       }

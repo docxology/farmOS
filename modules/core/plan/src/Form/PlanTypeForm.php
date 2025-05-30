@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\plan\Form;
 
 use Drupal\Core\Entity\EntityForm;
@@ -13,6 +15,13 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @package Drupal\plan\Form
  */
 class PlanTypeForm extends EntityForm {
+
+  /**
+   * The plan type entity.
+   *
+   * @var \Drupal\plan\Entity\PlanTypeInterface
+   */
+  protected $entity;
 
   /**
    * The workflow manager.

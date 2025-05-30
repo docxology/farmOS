@@ -5,6 +5,8 @@
  * Contains data_stream_notification.module.
  */
 
+declare(strict_types=1);
+
 /**
  * Implements hook_mail().
  */

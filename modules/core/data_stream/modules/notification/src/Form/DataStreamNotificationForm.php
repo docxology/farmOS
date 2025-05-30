@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\data_stream_notification\Form;
 
 use Drupal\Core\Entity\EntityForm;
@@ -14,6 +16,13 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Data stream notification entity form.
  */
 class DataStreamNotificationForm extends EntityForm {
+
+  /**
+   * The data stream notification entity.
+   *
+   * @var \Drupal\data_stream_notification\Entity\DataStreamNotificationInterface
+   */
+  protected $entity;
 
   /**
    * The notification condition manager service.
@@ -426,6 +435,7 @@ class DataStreamNotificationForm extends EntityForm {
 
     // Save the condition and delivery values, defaulting to an empty array.
     // The parent method will skip these since they are plugin collections.
+    /** @var \Drupal\data_stream_notification\Entity\DataStreamNotificationInterface $entity */
     $values = $form_state->getValues();
     foreach (['condition', 'delivery'] as $type) {
       $entity->set($type, $values[$type] ?? []);

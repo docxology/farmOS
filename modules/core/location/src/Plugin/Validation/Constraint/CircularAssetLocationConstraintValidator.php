@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_location\Plugin\Validation\Constraint;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
@@ -64,13 +66,14 @@ class CircularAssetLocationConstraintValidator extends ConstraintValidator imple
     }
 
     // Get the log's timestamp.
-    $timestamp = $log->get('timestamp')->value;
+    $timestamp = (int) $log->get('timestamp')->value;
 
     // Iterate through referenced entities.
     foreach ($value->referencedEntities() as $delta => $asset) {
 
       // Load assets that are located in the asset being referenced.
       // Use our own method to recurse into sub-location assets as well.
+      assert($asset instanceof AssetInterface);
       $assets_in_location = $this->getAssetsByLocationRecursively($asset, $timestamp);
 
       // Make sure that none of the assets are located in this asset.

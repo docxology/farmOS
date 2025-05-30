@@ -5,6 +5,8 @@
  * Post update functions for farm_kml module.
  */
 
+declare(strict_types=1);
+
 use Drupal\system\Entity\Action;
 
 /**

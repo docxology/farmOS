@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_location\EventSubscriber;
 
 use Drupal\Core\Cache\CacheTagsInvalidatorInterface;
@@ -67,7 +69,7 @@ class LogEventSubscriber implements EventSubscriberInterface {
    * @return array
    *   The event names to listen for, and the methods that should be executed.
    */
-  public static function getSubscribedEvents() {
+  public static function getSubscribedEvents(): array {
     return [
       LogEvent::DELETE => 'logDelete',
       LogEvent::PRESAVE => 'logPresave',

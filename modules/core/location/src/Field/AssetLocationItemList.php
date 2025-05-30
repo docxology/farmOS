@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_location\Field;
 
 use Drupal\Core\Field\EntityReferenceFieldItemList;
 use Drupal\Core\TypedData\ComputedItemListTrait;
+use Drupal\asset\Entity\AssetInterface;
 
 /**
  * Computes the current location value for assets.
@@ -21,6 +24,7 @@ class AssetLocationItemList extends EntityReferenceFieldItemList {
     $entity = $this->getEntity();
 
     // Get the asset's current locations.
+    assert($entity instanceof AssetInterface);
     $locations = \Drupal::service('asset.location')->getLocation($entity);
 
     // Update the assets current location values to match.

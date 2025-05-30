@@ -5,6 +5,8 @@
  * Post update hooks for the farm_quick_movement module.
  */
 
+declare(strict_types=1);
+
 use Drupal\system\Entity\Action;
 
 /**

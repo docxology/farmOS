@@ -5,6 +5,8 @@
  * Contains farm_birth.module.
  */
 
+declare(strict_types=1);
+
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeInterface;

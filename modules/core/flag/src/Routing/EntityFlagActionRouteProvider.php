@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_flag\Routing;
 
 use Drupal\Core\Entity\EntityTypeInterface;
@@ -34,7 +36,7 @@ class EntityFlagActionRouteProvider implements EntityRouteProviderInterface {
    * @return \Symfony\Component\Routing\Route|null
    *   The generated route, if available.
    */
-  protected function getEntityFlagFormRoute(EntityTypeInterface $entity_type) {
+  protected function getEntityFlagFormRoute(EntityTypeInterface $entity_type): ?Route {
     if ($entity_type->hasLinkTemplate('flag-action-form')) {
       $route = new Route($entity_type->getLinkTemplate('flag-action-form'));
       $route->setDefault('_form', $entity_type->getFormClass('flag-action-form'));
@@ -42,6 +44,7 @@ class EntityFlagActionRouteProvider implements EntityRouteProviderInterface {
       $route->setRequirement('_user_is_logged_in', 'TRUE');
       return $route;
     }
+    return NULL;
   }
 
 }

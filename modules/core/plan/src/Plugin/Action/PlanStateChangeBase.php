@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\plan\Plugin\Action;
 
 use Drupal\Core\Access\AccessResult;
@@ -81,7 +83,7 @@ abstract class PlanStateChangeBase extends EntityActionBase {
     // Deny access if the workflow does not support the target state.
     if (empty($target_state)) {
       $result = $result->orIf(AccessResult::forbidden(
-        $this->t('The %workflow workflow does not support the %target_state state.', ['%workflow' => $workflow->getLabel(), '%target_state' => $this->targetState]),
+        $this->t('The %workflow workflow does not support the %target_state state.', ['%workflow' => $workflow->getLabel(), '%target_state' => $this->targetState])->render(),
       ));
     }
     // Else check that a transition exists to the desired target state.

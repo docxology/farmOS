@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_sensor_listener\Controller;
 
 use Drupal\farm_sensor\Controller\SensorDataController;

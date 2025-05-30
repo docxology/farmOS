@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\asset\Entity;
 
 use Drupal\Core\Entity\ContentEntityInterface;
@@ -63,7 +65,7 @@ interface AssetInterface extends ContentEntityInterface, EntityChangedInterface,
   /**
    * Sets the asset archived timestamp.
    *
-   * @param int $timestamp
+   * @param int|string|null $timestamp
    *   Archived timestamp of the asset.
    *
    * @return \Drupal\asset\Entity\AssetInterface

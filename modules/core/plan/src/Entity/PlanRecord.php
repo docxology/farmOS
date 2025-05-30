@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\plan\Entity;
 
 use Drupal\Core\Entity\ContentEntityBase;
@@ -85,7 +87,10 @@ class PlanRecord extends ContentEntityBase implements PlanRecordInterface {
    * {@inheritdoc}
    */
   public function getPlan(): ?PlanInterface {
-    return $this->get('plan')->first()?->entity;
+    if (!$this->get('plan')->isEmpty()) {
+      return $this->get('plan')->referencedEntities()[0];
+    }
+    return NULL;
   }
 
 }

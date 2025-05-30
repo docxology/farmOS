@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\data_stream\Plugin\DataStream\DataStreamType;
 
 use Drupal\Component\Datetime\TimeInterface;
@@ -394,6 +396,7 @@ class Basic extends DataStreamTypeBase implements DataStreamStorageInterface, Da
 
     // Build an array of data.
     $data = [];
+    /** @var object{name: string, timestamp: int, value_numerator: int, value_denominator: int} $row */
     foreach ($result as $row) {
 
       // If name or timestamp are empty, skip.

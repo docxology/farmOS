@@ -5,6 +5,8 @@
  * Install, update and uninstall functions for the farm_api module.
  */
 
+declare(strict_types=1);
+
 use Drupal\Core\Utility\Error;
 
 /**
@@ -14,9 +16,6 @@ function farm_api_install() {
 
   // Allow JSON:API write operations.
   \Drupal::configFactory()->getEditable('jsonapi.settings')->set('read_only', FALSE)->save();
-
-  // Change the base JSON:API path to /api.
-  \Drupal::configFactory()->getEditable('jsonapi_extras.settings')->set('path_prefix', 'api')->save();
 
   // Load the simple_oauth module settings.
   $simple_oauth_settings = \Drupal::configFactory()->getEditable('simple_oauth.settings');
@@ -54,7 +53,7 @@ function farm_api_install() {
   $pri_filename = sprintf('%s/private.key', $keys_path);
 
   // Attempt to create keys if they don't exist.
-  if (!$file_system_checker->fileExist($pub_filename) || !$file_system_checker->fileExist($pri_filename)) {
+  if (!empty($keys_path) && (!$file_system_checker->fileExist($pub_filename) || !$file_system_checker->fileExist($pri_filename))) {
     try {
       $key_gen->generateKeys($keys_path);
     }

@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\quantity\Plugin\migrate\process;
 
 use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\migrate\Attribute\MigrateProcess;
 use Drupal\migrate\MigrateExecutableInterface;
 use Drupal\migrate\MigrateSkipRowException;
 use Drupal\migrate\ProcessPluginBase;
@@ -17,13 +20,12 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * requires a "lookup" to happen before creating the entity. Since the quantity
  * value field is a Fraction field, it is easier to use our own process plugin.
  *
- * @MigrateProcessPlugin(
- *   id = "create_quantity",
- *   handle_multiples = TRUE
- * )
- *
  * @internal
  */
+#[MigrateProcess(
+  id: 'create_quantity',
+  handle_multiples: TRUE,
+)]
 class CreateQuantity extends ProcessPluginBase implements ContainerFactoryPluginInterface {
 
   /**

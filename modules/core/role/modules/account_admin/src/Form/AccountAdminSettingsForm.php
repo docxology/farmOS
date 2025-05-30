@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_role_account_admin\Form;
 
 use Drupal\Core\Cache\CacheTagsInvalidatorInterface;

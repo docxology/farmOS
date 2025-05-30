@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_import_csv\Form;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
@@ -40,9 +42,9 @@ class CsvImportForm extends MigrateSourceUiForm {
   protected $entityTypeManager;
 
   /**
-   * The tempstore service.
+   * The farm_import_csv temp store.
    *
-   * @var \Drupal\Core\TempStore\PrivateTempStoreFactory
+   * @var \Drupal\Core\TempStore\PrivateTempStore
    */
   protected $tempStore;
 

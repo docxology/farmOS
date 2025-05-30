@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\farm_settings\Functional;
 
+use Drupal\FunctionalJavascriptTests\JSWebAssert;
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 
 /**
@@ -55,7 +58,7 @@ class ModulesFormTest extends WebDriverTestBase {
     // Assert that installed modules are checked and disabled.
     foreach (['farm_land', 'farm_observation'] as $module) {
       $this->assertModuleCheckboxState('core', $module, TRUE, TRUE);
-    };
+    }
 
     // Assert that uninstalled modules are unchecked.
     foreach (['farm_plant', 'farm_maintenance'] as $module) {
@@ -92,8 +95,7 @@ class ModulesFormTest extends WebDriverTestBase {
     $field_name = $type . "[modules][$module]";
     $checkbox = $page->findField($field_name);
     $this->assertNotEmpty($checkbox, "The checkbox for $module exists.");
-
-    $this->assertEquals($checked, $checkbox->isChecked(), "The $module checkbox is " . $checked ? '' : 'not ' . 'checked.');
+    $this->assertEquals($checked, $checkbox->isChecked(), "The $module checkbox has expected state.");
     $this->assertEquals($disabled, $checkbox->hasAttribute('disabled'), "The $module checkbox is disabled: $disabled");
   }
 
@@ -125,7 +127,9 @@ class ModulesFormTest extends WebDriverTestBase {
     $page->pressButton('install-modules');
 
     // Wait for the batch process to complete.
-    $this->assertSession()->waitForText('Install modules', 30000);
+    $session = $this->assertSession();
+    $this->assertInstanceOf(JSWebAssert::class, $session);
+    $session->waitForText('Install modules', 30000);
 
     // Rebuild the list of installed modules.
     $this->rebuildContainer();

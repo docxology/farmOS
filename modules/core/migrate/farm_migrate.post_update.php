@@ -5,6 +5,8 @@
  * Post update hooks for the farm_migrate module.
  */
 
+declare(strict_types=1);
+
 /**
  * Uninstall farmOS v1 migrations.
  */

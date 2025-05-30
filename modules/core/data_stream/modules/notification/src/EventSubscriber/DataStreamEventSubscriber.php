@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\data_stream_notification\EventSubscriber;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -33,7 +35,7 @@ class DataStreamEventSubscriber implements EventSubscriberInterface {
   /**
    * {@inheritdoc}
    */
-  public static function getSubscribedEvents() {
+  public static function getSubscribedEvents(): array {
     return [
       DataStreamEvent::DATA_RECEIVE => 'onDataReceive',
     ];

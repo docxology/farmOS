@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_csv\Encoder;
 
 use Drupal\csv_serialization\Encoder\CsvEncoder as ContribCsvEncoder;

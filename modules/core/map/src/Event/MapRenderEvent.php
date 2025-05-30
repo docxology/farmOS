@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_map\Event;
 
 use Drupal\Component\EventDispatcher\Event;
@@ -16,9 +18,9 @@ class MapRenderEvent extends Event {
   const EVENT_NAME = 'map_render_event';
 
   /**
-   * The farm_map render element.
+   * The farm_map render element or render array.
    *
-   * @var \Drupal\farm_map\Element\FarmMap
+   * @var \Drupal\farm_map\Element\FarmMap|array
    */
   public $element;
 

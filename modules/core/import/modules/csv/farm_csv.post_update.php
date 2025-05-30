@@ -5,6 +5,8 @@
  * Post update hooks for the farm_import_csv module.
  */
 
+declare(strict_types=1);
+
 /**
  * Install farm_migrate as a dependency of farm_import_csv.
  */

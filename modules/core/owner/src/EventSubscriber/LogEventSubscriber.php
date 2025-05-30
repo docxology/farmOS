@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_owner\EventSubscriber;
 
 use Drupal\Core\Session\AccountInterface;
@@ -34,7 +36,7 @@ class LogEventSubscriber implements EventSubscriberInterface {
    * @return array
    *   The event names to listen for, and the methods that should be executed.
    */
-  public static function getSubscribedEvents() {
+  public static function getSubscribedEvents(): array {
     return [
       LogEvent::PRESAVE => 'setLogOwner',
     ];
@@ -63,7 +65,7 @@ class LogEventSubscriber implements EventSubscriberInterface {
     }
 
     // Add the current user to the log's owners.
-    $log->owner[] = ['target_id' => $this->currentUser->id()];
+    $log->set('owner', [$this->currentUser->id()]);
   }
 
 }

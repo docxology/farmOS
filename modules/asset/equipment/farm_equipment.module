@@ -5,6 +5,8 @@
  * Contains farm_equipment.module.
  */
 
+declare(strict_types=1);
+
 use Drupal\Core\Entity\EntityTypeInterface;
 
 /**

@@ -5,6 +5,8 @@
  * Post update hooks for the farm_export_csv module.
  */
 
+declare(strict_types=1);
+
 use Drupal\system\Entity\Action;
 
 /**

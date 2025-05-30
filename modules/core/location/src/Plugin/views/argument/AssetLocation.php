@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_location\Plugin\views\argument;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\farm_location\AssetLocationInterface;
 use Drupal\views\Plugin\views\argument\ArgumentPluginBase;
+use Drupal\views\Plugin\views\query\Sql;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -68,6 +71,18 @@ class AssetLocation extends ArgumentPluginBase {
    */
   public function query($group_by = FALSE) {
 
+    // Bail if not a SQL query.
+    if (!$this->query instanceof Sql) {
+      return;
+    }
+
+    // Load the location asset, and bail if it's null.
+    /** @var \Drupal\asset\Entity\AssetInterface|null $location */
+    $location = $this->entityTypeManager->getStorage('asset')->load($this->argument);
+    if (is_null($location)) {
+      return;
+    }
+
     // First query for a list of asset IDs in the location, then use this list
     // to filter the current View.
     // We do this in two separate queries for a few reasons:
@@ -79,8 +94,6 @@ class AssetLocation extends ArgumentPluginBase {
     // 3. It keeps this Views argument handler's query modifications very
     // simple. It only needs the condition: "WHERE asset.id IN (:asset_ids)".
     // See https://www.drupal.org/project/farm/issues/3217168 for more info.
-    /** @var \Drupal\asset\Entity\AssetInterface $location */
-    $location = $this->entityTypeManager->getStorage('asset')->load($this->argument);
     $assets = $this->assetLocation->getAssetsByLocation([$location]);
     $asset_ids = [];
     foreach ($assets as $asset) {

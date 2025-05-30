@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_ui_menu\Render\Element;
 
 use Drupal\Core\Menu\MenuTreeParameters;
@@ -37,7 +39,7 @@ class FarmAdminToolbar implements TrustedCallbackInterface {
     $menu_tree = \Drupal::service('toolbar.menu_tree');
     $parameters = new MenuTreeParameters();
     $parameters->setRoot('farm.base')->excludeRoot()->setMaxDepth(4)->onlyEnabledLinks();
-    $tree = $menu_tree->load(NULL, $parameters);
+    $tree = $menu_tree->load('', $parameters);
     $manipulators = [
       ['callable' => 'menu.default_tree_manipulators:checkAccess'],
       ['callable' => 'menu.default_tree_manipulators:generateIndexAndSort'],

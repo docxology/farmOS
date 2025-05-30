@@ -5,6 +5,8 @@
  * Post update functions for farm_ui_location module.
  */
 
+declare(strict_types=1);
+
 use Drupal\farm_map\Entity\MapType;
 
 /**

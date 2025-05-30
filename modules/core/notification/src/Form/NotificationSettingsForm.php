@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_notification\Form;
 
 use Drupal\Core\Form\FormBase;

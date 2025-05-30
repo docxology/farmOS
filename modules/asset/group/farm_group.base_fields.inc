@@ -5,6 +5,8 @@
  * Code for creating farmOS group membership base field definitions.
  */
 
+declare(strict_types=1);
+
 use Drupal\farm_group\Field\AssetGroupItemList;
 
 /**

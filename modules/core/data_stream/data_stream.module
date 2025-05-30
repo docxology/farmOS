@@ -5,6 +5,8 @@
  * The data stream module.
  */
 
+declare(strict_types=1);
+
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Url;

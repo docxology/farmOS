@@ -1,13 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\farm_login\Functional;
 
-use Drupal\Component\Render\FormattableMarkup;
-use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
 use Drupal\Tests\farm_test\Functional\FarmBrowserTestBase;
 use Drupal\user\Entity\User;
+use Drupal\user\UserInterface;
 
 /**
  * Test using an email in the UserLoginForm.
@@ -44,12 +45,8 @@ class UserLoginTest extends FarmBrowserTestBase {
 
     // 1. Test for correct text in the login form.
     $this->drupalGet('user/login');
-    $this->assertSession()->pageTextContains($this->t('Email or username'));
-    $this->assertSession()
-      ->pageTextContains($this->t('Enter your @s email address or username.', [
-        '@s' => $this->config('system.site')
-          ->get('name'),
-      ]));
+    $this->assertSession()->pageTextContains('Email or username');
+    $this->assertSession()->pageTextContains('Enter your ' . $this->config('system.site')->get('name') . ' email address or username.');
 
     // 2. Login the user using their username.
     $user = $this->drupalCreateUser([]);
@@ -96,6 +93,11 @@ class UserLoginTest extends FarmBrowserTestBase {
 
     $user1 = $this->drupalCreateUser([]);
     $incorrect_user1 = clone $user1;
+    // PHPStan level 2+ throws the following error on the next line:
+    // Binary operation ".=" between Drupal\Core\Field\FieldItemListInterface
+    // and 'incorrect' results in an error.
+    // We ignore this because we are following Drupal core's pattern.
+    // @phpstan-ignore assignOp.invalid
     $incorrect_user1->passRaw .= 'incorrect';
 
     $user2 = $this->drupalCreateUser([]);
@@ -180,29 +182,44 @@ class UserLoginTest extends FarmBrowserTestBase {
   /**
    * A helper function to login using an email.
    *
-   * @param \Drupal\Core\Session\AccountInterface $account
+   * @param \Drupal\user\UserInterface $user
    *   User object representing the user to log in.
    *
    * @see drupalLogin()
    * @see drupalCreateUser()
    */
-  protected function drupalLoginUsingEmail(AccountInterface $account) {
+  protected function drupalLoginUsingEmail(UserInterface $user) {
+    // PHPStan level 3+ throws the following error on the next line:
+    // If condition is always true.
+    // We ignore this because the \Drupal\Tests\UiHelperTrait::loggedInUser
+    // property has an incorrect type hint.
+    // @phpstan-ignore if.alwaysTrue
     if ($this->loggedInUser) {
       $this->drupalLogout();
     }
 
     $this->drupalGet(Url::fromRoute('user.login'));
     $this->submitForm([
-      'name' => $account->getEmail(),
-      'pass' => $account->passRaw,
+      'name' => $user->getEmail(),
+      // PHPStan level 2+ throws the following error on the next line:
+      // Access to an undefined property
+      // Drupal\Core\Session\AccountInterface::$passRaw.
+      // We ignore this because we are following Drupal core's pattern.
+      // @phpstan-ignore property.notFound
+      'pass' => $user->passRaw,
     ], 'Log in');
 
+    // PHPStan level 2+ throws the following error on the next line:
+    // Access to an undefined property
+    // Drupal\Core\Session\AccountInterface::$sessionId.
+    // We ignore this because we are following Drupal core's pattern.
     // @see ::drupalUserIsLoggedIn()
-    $account->sessionId = $this->getSession()->getCookie(\Drupal::service('session_configuration')->getOptions(\Drupal::request())['name']);
-    $this->assertTrue($this->drupalUserIsLoggedIn($account), new FormattableMarkup('User %name successfully logged in.', ['%name' => $account->getAccountName()]));
+    // @phpstan-ignore property.notFound
+    $user->sessionId = $this->getSession()->getCookie(\Drupal::service('session_configuration')->getOptions(\Drupal::request())['name']);
+    $this->assertTrue($this->drupalUserIsLoggedIn($user), 'User ' . $user->getAccountName() . ' successfully logged in.');
 
-    $this->loggedInUser = $account;
-    $this->container->get('current_user')->setAccount($account);
+    $this->loggedInUser = $user;
+    $this->container->get('current_user')->setAccount($user);
   }
 
 }

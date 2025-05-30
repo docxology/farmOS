@@ -5,6 +5,8 @@
  * Contains farm_plant_type.module.
  */
 
+declare(strict_types=1);
+
 use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 

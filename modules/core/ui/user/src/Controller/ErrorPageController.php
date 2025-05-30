@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_ui_user\Controller;
 
 use Drupal\system\Controller\Http4xxController;

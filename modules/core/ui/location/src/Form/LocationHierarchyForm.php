@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_ui_location\Form;
 
 use Drupal\Component\Serialization\Json;
@@ -97,7 +99,7 @@ class LocationHierarchyForm extends FormBase {
    * @param \Drupal\asset\Entity\AssetInterface|null $asset
    *   Optionally specify the parent asset that this page is being built for.
    *
-   * @return string
+   * @return \Drupal\Core\StringTranslation\TranslatableMarkup
    *   Returns the translated page title.
    */
   public function getTitle(?AssetInterface $asset = NULL) {
@@ -304,7 +306,7 @@ class LocationHierarchyForm extends FormBase {
       }
 
       // Remove the original parent.
-      if (!empty($asset->get('parent'))) {
+      if (!$asset->get('parent')->isEmpty()) {
         /** @var \Drupal\Core\Field\Plugin\Field\FieldType\EntityReferenceItem $parent */
         foreach ($asset->get('parent') as $delta => $parent) {
           $parent_id = $parent->getValue()['target_id'];
@@ -319,7 +321,7 @@ class LocationHierarchyForm extends FormBase {
 
       // Add the new parent, if applicable.
       if (!empty($change['new_parent'])) {
-        $asset->get('parent')[] = ['target_id' => $change['new_parent']];
+        $asset->get('parent')->appendItem($change['new_parent']);
         if (!array_key_exists($asset->id(), $save_assets)) {
           $save_assets[$asset->id()] = $asset;
         }
@@ -338,7 +340,7 @@ class LocationHierarchyForm extends FormBase {
         $message = $this->t('Parents changed to %parents via the Locations drag and drop editor.', ['%parents' => implode(', ', $parent_names)]);
       }
       $asset->setNewRevision(TRUE);
-      $asset->setRevisionLogMessage($message);
+      $asset->setRevisionLogMessage($message->render());
       $asset->save();
     }
 

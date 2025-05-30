@@ -161,10 +161,10 @@ has expired.
 It is a one step process:
 
 The client sends an authenticated request to the `/oauth/token`endpoint with
-`grant_type` set to `refresh_token` and includes the `refresh_token`,
-`client_id` and `client_secret` in the request body.
+`grant_type` set to `refresh_token` and includes the `refresh_token` and
+`client_id` in the request body.
 
-    $ curl -X POST -H 'Authorization: Bearer ad52c04d26c1002084501d28b59196996f0bd93f' -d 'refresh_token=52e7a0e12e8ddd08b155b3b3ee385687fef01664&grant_type=refresh_token&client_id=farm&client_secret=client_secret' http://localhost/oauth/token
+    $ curl -X POST -d 'refresh_token=52e7a0e12e8ddd08b155b3b3ee385687fef01664&grant_type=refresh_token&client_id=farm' http://localhost/oauth/token
     {"access_token":"acdbfabb736e42aa301b50fdda95d6b7fd3e7e14","expires_in":"300","token_type":"Bearer","scope":"user_access","refresh_token":"b73f4744840498a26f43447d8cf755238bfd391a"}
 
 The server responds with an `access_token` and `refresh_token` that can be used

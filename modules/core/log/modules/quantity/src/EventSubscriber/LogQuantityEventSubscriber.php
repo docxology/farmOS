@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_log_quantity\EventSubscriber;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -35,7 +37,7 @@ class LogQuantityEventSubscriber implements EventSubscriberInterface {
    * @return array
    *   The event names to listen for, and the methods that should be executed.
    */
-  public static function getSubscribedEvents() {
+  public static function getSubscribedEvents(): array {
     return [
       LogEvent::CLONE => 'logClone',
       LogEvent::DELETE => 'logDelete',
@@ -88,7 +90,7 @@ class LogQuantityEventSubscriber implements EventSubscriberInterface {
     }
 
     // Get any quantities the log references.
-    $quantities = $log->quantity->referencedEntities();
+    $quantities = $log->get('quantity')->referencedEntities();
 
     // Delete quantity entities.
     if (!empty($quantities)) {
@@ -128,7 +130,7 @@ class LogQuantityEventSubscriber implements EventSubscriberInterface {
         return TRUE;
       }));
       $log->setNewRevision(TRUE);
-      $log->setRevisionLogMessage($this->t('Removed reference to deleted quantity %uuid.', ['%uuid' => $quantity->uuid()]));
+      $log->setRevisionLogMessage($this->t('Removed reference to deleted quantity %uuid.', ['%uuid' => $quantity->uuid()])->render());
       $log->save();
     }
   }

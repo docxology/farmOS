@@ -1,28 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_flag\Plugin\Action;
 
+use Drupal\Core\Action\Attribute\Action;
 use Drupal\Core\Action\Plugin\Action\EntityActionBase;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\TempStore\PrivateTempStoreFactory;
+use Drupal\farm_flag\Plugin\Action\Derivative\EntityFlagDeriver;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Redirects to a form to add flags to the entity.
- *
- * @Action(
- *   id = "entity:flag_action",
- *   action_label = @Translation("Flag an entity"),
- *   deriver = "Drupal\farm_flag\Plugin\Action\Derivative\EntityFlagDeriver",
- * )
  */
+#[Action(
+  id: 'entity:flag_action',
+  action_label: new TranslatableMarkup('Flag an entity'),
+  deriver: EntityFlagDeriver::class,
+)]
 class EntityFlag extends EntityActionBase {
 
   /**
-   * The tempstore object.
+   * The private temp store.
    *
-   * @var \Drupal\Core\TempStore\SharedTempStore
+   * @var \Drupal\Core\TempStore\PrivateTempStore
    */
   protected $tempStore;
 

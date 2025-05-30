@@ -5,6 +5,8 @@
  * ID tag module.
  */
 
+declare(strict_types=1);
+
 use Drupal\Core\Entity\EntityTypeInterface;
 
 /**
@@ -66,4 +68,11 @@ function farm_id_tag_theme() {
       'base hook' => 'field',
     ],
   ];
+}
+
+/**
+ * Implements hook_farm_api_allow_resource_types().
+ */
+function farm_id_tag_farm_api_allow_resource_types() {
+  return ['tag_type'];
 }

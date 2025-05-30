@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\asset\Form;
 
 use Drupal\Core\Entity\EntityForm;
@@ -13,6 +15,13 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @package Drupal\asset\Form
  */
 class AssetTypeForm extends EntityForm {
+
+  /**
+   * The asset type entity.
+   *
+   * @var \Drupal\asset\Entity\AssetTypeInterface
+   */
+  protected $entity;
 
   /**
    * The workflow manager.

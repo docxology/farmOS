@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_field;
 
 use Drupal\Core\Field\BaseFieldDefinition;
@@ -627,7 +629,7 @@ class FarmFieldFactory implements FarmFieldFactoryInterface {
         break;
 
       case 'image':
-        $settings['file_extensions'] = 'png gif jpg jpeg';
+        $settings['file_extensions'] = 'png gif jpg jpeg webp';
         $settings['max_resolution'] = '';
         $settings['min_resolution'] = '';
         $settings['alt_field'] = FALSE;

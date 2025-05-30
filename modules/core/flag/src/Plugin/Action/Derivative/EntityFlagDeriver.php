@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_flag\Plugin\Action\Derivative;
 
 use Drupal\Core\Action\Plugin\Action\Derivative\EntityActionDeriverBase;

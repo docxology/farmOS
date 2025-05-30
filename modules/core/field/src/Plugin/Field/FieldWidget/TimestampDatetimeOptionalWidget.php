@@ -1,10 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_field\Plugin\Field\FieldWidget;
 
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Datetime\Plugin\Field\FieldWidget\TimestampDatetimeWidget;
+use Drupal\Core\Field\Attribute\FieldWidget;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 
 /**
  * Plugin implementation of the 'datetime timestamp optional' widget.
@@ -12,15 +16,12 @@ use Drupal\Core\Form\FormStateInterface;
  * Extends the core datetime_timestamp widget to not default to current time.
  * This is useful when a timestamp field is optional and should not default
  * to the current time, such as the animal birthdate.
- *
- * @FieldWidget(
- *   id = "datetime_timestamp_optional",
- *   label = @Translation("Datetime Timestamp Optional"),
- *   field_types = {
- *     "timestamp",
- *   }
- * )
  */
+#[FieldWidget(
+  id: 'datetime_timestamp_optional',
+  label: new TranslatableMarkup('Datetime Timestamp Optional'),
+  field_types: ['timestamp'],
+)]
 class TimestampDatetimeOptionalWidget extends TimestampDatetimeWidget {
 
   /**

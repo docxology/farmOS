@@ -5,6 +5,9 @@
  * Contains farm_log_quantity.module.
  */
 
+declare(strict_types=1);
+
+use Drupal\Core\Entity\EntityFormInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Form\FormStateInterface;
 
@@ -65,6 +68,7 @@ function farm_log_quantity_form_log_form_alter(&$form, FormStateInterface $form_
     $bundle_select = &$form['quantity']['widget']['actions']['bundle'];
 
     // Load the log type storage.
+    assert($form_state->getFormObject() instanceof EntityFormInterface);
     /** @var \Drupal\log\Entity\Log $entity */
     $entity = $form_state->getFormObject()->getEntity();
 
@@ -92,7 +96,6 @@ function farm_log_quantity_default_type(?string $log_type = NULL) {
   // If a log type is specified, attempt to look up the default quantity type
   // from the log type's third party settings.
   if (!empty($log_type)) {
-    /** @var \Drupal\log\Entity\LogType $log_type_storage */
     $log_type_definition = \Drupal::service('entity_type.manager')->getStorage('log_type')->load($log_type);
     $type = $log_type_definition->getThirdPartySetting('farm_log_quantity', 'default_quantity_type', NULL);
     if (!empty($type)) {

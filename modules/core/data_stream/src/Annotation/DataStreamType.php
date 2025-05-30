@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\data_stream\Annotation;
 
 use Drupal\Component\Annotation\Plugin;

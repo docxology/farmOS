@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_ui_theme\Form;
 
 use Drupal\Component\Datetime\TimeInterface;
@@ -125,7 +127,7 @@ class GinContentFormBase extends ContentEntityForm implements RenderCallbackInte
 
     // Only alter the form display if farm_ui_theme.use_field_group is TRUE
     // or if the form display is new and not saved.
-    /** @var \Drupal\Core\Entity\Display\EntityFormDisplayInterface $form_display */
+    /** @var \Drupal\Core\Entity\Display\EntityFormDisplayInterface|null $form_display */
     $form_display = $form_state->get('form_display');
     if (!$form_display || !$form_display->getThirdPartySetting('farm_ui_theme', 'use_field_group', $form_display->isNew())) {
       return $form;
@@ -188,7 +190,10 @@ class GinContentFormBase extends ContentEntityForm implements RenderCallbackInte
       $revision_items = [];
 
       // Only add created metadata if available.
-      if ($this->entity instanceof EntityOwnerInterface) {
+      if (
+        $this->entity instanceof EntityOwnerInterface
+        && method_exists($this->entity, 'getCreatedTime')
+      ) {
         $author = $this->entity->getOwner()->getAccountName();
         $date = $this->dateFormatter->format($this->entity->getCreatedTime(), 'short', '', $this->currentUser()->getTimeZone(), '');
         $revision_items[] = $this->t('Created @timestamp by @author', ['@timestamp' => $date, '@author' => $author]);
@@ -245,7 +250,7 @@ class GinContentFormBase extends ContentEntityForm implements RenderCallbackInte
     }
 
     // Remove the sidebar if the display is not using field groups.
-    /** @var \Drupal\Core\Entity\Display\EntityFormDisplayInterface $form_display */
+    /** @var \Drupal\Core\Entity\Display\EntityFormDisplayInterface|null $form_display */
     $form_display = $form_state->get('form_display');
     if (!$form_display || !$form_display->getThirdPartySetting('farm_ui_theme', 'use_field_group', $form_display->isNew())) {
 

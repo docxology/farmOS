@@ -5,6 +5,8 @@
  * Post update functions for farm_settings module.
  */
 
+declare(strict_types=1);
+
 /**
  * Remove farm_api consumer bundle fields.
  */
@@ -61,4 +63,24 @@ function farm_api_post_update_enable_default_consumer_module(&$sandbox = NULL) {
     $farm_default->save();
   }
 
+}
+
+/**
+ * Uninstall the JSON:API Extras module, unless other modules depend on it.
+ */
+function farm_api_post_update_uninstall_jsonapi_extras(&$sandbox = NULL) {
+  if (\Drupal::service('module_handler')->moduleExists('jsonapi_extras')) {
+    $modules = \Drupal::service('extension.list.module')->reset()->getList();
+    $installed_dependents = [];
+    if (!empty($modules['jsonapi_extras']->required_by)) {
+      foreach (array_keys($modules['jsonapi_extras']->required_by) as $module) {
+        if (\Drupal::service('module_handler')->moduleExists($module)) {
+          $installed_dependents[] = $module;
+        }
+      }
+    }
+    if (empty($installed_dependents)) {
+      \Drupal::service('module_installer')->uninstall(['jsonapi_extras']);
+    }
+  }
 }

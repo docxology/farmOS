@@ -5,6 +5,8 @@
  * Install, update and uninstall functions for the farm_l10n module.
  */
 
+declare(strict_types=1);
+
 /**
  * Implements hook_install().
  */

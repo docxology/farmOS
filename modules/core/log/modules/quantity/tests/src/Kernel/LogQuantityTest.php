@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\farm_log_quantity\Kernel;
 
 use Drupal\KernelTests\KernelTestBase;
@@ -17,14 +19,14 @@ class LogQuantityTest extends KernelTestBase {
   /**
    * The log storage.
    *
-   * @var \Drupal\Core\Entity\EntityStorageInterface
+   * @var \Drupal\log\LogStorage
    */
   protected $logStorage;
 
   /**
    * The quantity storage.
    *
-   * @var \Drupal\Core\Entity\EntityStorageInterface
+   * @var \Drupal\Core\Entity\Sql\SqlContentEntityStorage
    */
   protected $quantityStorage;
 

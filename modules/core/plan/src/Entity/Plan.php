@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\plan\Entity;
 
 use Drupal\Core\Entity\EntityChangedTrait;

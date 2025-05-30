@@ -5,6 +5,8 @@
  * Post update functions for farm_fieldkit module.
  */
 
+declare(strict_types=1);
+
 use Drupal\simple_oauth\Oauth2ScopeInterface;
 
 /**

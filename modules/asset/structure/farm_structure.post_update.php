@@ -5,6 +5,8 @@
  * Post update hooks for the farm_structure module.
  */
 
+declare(strict_types=1);
+
 use Drupal\farm_structure\Entity\FarmStructureType;
 
 /**

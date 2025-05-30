@@ -5,6 +5,8 @@
  * Provides Views runtime hooks for farm_input module.
  */
 
+declare(strict_types=1);
+
 use Drupal\views\ViewExecutable;
 
 /**

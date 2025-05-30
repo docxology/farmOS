@@ -1,22 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_map\Plugin\Block;
 
+use Drupal\Core\Block\Attribute\Block;
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Plugin\PluginDependencyTrait;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides a map block.
- *
- * @Block(
- *   id = "map_block",
- *   admin_label = @Translation("Map block"),
- * )
  */
+#[Block(
+  id: 'map_block',
+  admin_label: new TranslatableMarkup('Map block'),
+)]
 class MapBlock extends BlockBase implements ContainerFactoryPluginInterface {
 
   use PluginDependencyTrait;

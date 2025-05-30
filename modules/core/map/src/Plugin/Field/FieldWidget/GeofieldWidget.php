@@ -1,17 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_map\Plugin\Field\FieldWidget;
 
 use Drupal\Component\Utility\Html;
 use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Field\Attribute\FieldWidget;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\File\FileSystem;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\farm_geo\Traits\WktTrait;
 use Drupal\file\FileInterface;
 use Drupal\geofield\GeoPHP\GeoPHPInterface;
+use Drupal\geofield\Plugin\Field\FieldType\GeofieldItem;
 use Drupal\geofield\Plugin\Field\FieldWidget\GeofieldBaseWidget;
 use Drupal\geofield\Plugin\GeofieldBackendManager;
 use Drupal\geofield\WktGeneratorInterface;
@@ -19,15 +24,12 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Plugin implementation of the map 'geofield' widget.
- *
- * @FieldWidget(
- *   id = "farm_map_geofield",
- *   label = @Translation("farmOS Map"),
- *   field_types = {
- *     "geofield"
- *   }
- * )
  */
+#[FieldWidget(
+  id: 'farm_map_geofield',
+  label: new TranslatableMarkup('farmOS Map'),
+  field_types: ['geofield'],
+)]
 class GeofieldWidget extends GeofieldBaseWidget {
 
   use WktTrait;
@@ -160,11 +162,19 @@ class GeofieldWidget extends GeofieldBaseWidget {
     $element['#prefix'] = '<div id="' . $field_wrapper_id . '">';
     $element['#suffix'] = '</div>';
 
-    // Get the current form state value. Prioritize form state over field value.
+    // Determine the default value for the field.
+    // Prioritize the current form state value over the field value.
     $form_value = $form_state->getValue([$field_name, $delta]);
-    $field_value = $items[$delta]->value;
-    $current_value = $form_value['value'] ?? $field_value;
-    $element['#default_value'] = $current_value;
+    $default_value = $form_value['value'] ?? NULL;
+    $field = $items->get($delta);
+    if (
+      empty($default_value)
+      && $field instanceof GeofieldItem
+      && !$field->isEmpty()
+    ) {
+      $default_value = $field->get('value')->getValue();
+    }
+    $element['#default_value'] = $default_value;
 
     // Configure to display raw geometry.
     $display_raw_geometry = $this->getSetting('display_raw_geometry');
@@ -336,7 +346,7 @@ class GeofieldWidget extends GeofieldBaseWidget {
 
     // Get the file extension.
     $matches = [];
-    if (preg_match('/(?<=\.)[^.]+$/', $file->getFilename(), $matches) && isset($matches[0])) {
+    if (preg_match('/(?<=\.)[^.]+$/', $file->getFilename(), $matches) && !empty($matches[0])) {
       // Return the associated GeoPHP type.
       if (isset(self::$geoPhpTypes[$matches[0]])) {
         return self::$geoPhpTypes[$matches[0]];

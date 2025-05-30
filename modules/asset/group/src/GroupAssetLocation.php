@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_group;
 
 use Drupal\Component\Datetime\TimeInterface;
@@ -95,7 +97,7 @@ class GroupAssetLocation extends AssetLocation implements AssetLocationInterface
         // If the group's movement is the latest, replace the latest movement.
         $group_movement_id = $group_movement->id();
         $group_movement_timestamp = $group_movement->get('timestamp')->value;
-        if (($group_movement_id > $latest_id) && ($group_movement_timestamp >= $latest_timestamp)) {
+        if (($group_movement_timestamp > $latest_timestamp) || ($group_movement_timestamp == $latest_timestamp && $group_movement_id > $latest_id)) {
           $latest_movement = $group_movement;
           $latest_id = $group_movement_id;
           $latest_timestamp = $group_movement_timestamp;

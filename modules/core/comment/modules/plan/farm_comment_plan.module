@@ -5,6 +5,8 @@
  * Contains farm_comment_plan.module.
  */
 
+declare(strict_types=1);
+
 use Drupal\Core\Entity\EntityTypeInterface;
 
 /**

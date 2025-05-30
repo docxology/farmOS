@@ -1,23 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_location\Plugin\Field\FieldFormatter;
 
+use Drupal\Core\Field\Attribute\FieldFormatter;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\Plugin\Field\FieldFormatter\EntityReferenceLabelFormatter;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 
 /**
  * Field formatter for the current location asset field.
- *
- * @FieldFormatter(
- *   id = "asset_current_location",
- *   label = @Translation("Asset current location"),
- *   description = @Translation("Display the label of the referenced entities."),
- *   field_types = {
- *     "entity_reference"
- *   }
- * )
  */
+#[FieldFormatter(
+  id: 'asset_current_location',
+  label: new TranslatableMarkup('Asset current location'),
+  description: new TranslatableMarkup('Display the label of the referenced entities.'),
+  field_types: ['entity_reference'],
+)]
 class AssetCurrentLocationFormatter extends EntityReferenceLabelFormatter {
 
   /**

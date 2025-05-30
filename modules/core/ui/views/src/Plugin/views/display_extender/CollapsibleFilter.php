@@ -1,18 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_ui_views\Plugin\views\display_extender;
 
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Drupal\views\Attribute\ViewsDisplayExtender;
 use Drupal\views\Plugin\views\display_extender\DisplayExtenderPluginBase;
 
 /**
  * Defines a display extender plugin to configure collapsible exposed filters.
- *
- * @ViewsDisplayExtender(
- *   id = "collapsible_filter",
- *   title = @Translation("Collapsible filter")
- * )
  */
+#[ViewsDisplayExtender(
+  id: 'collapsible_filter',
+  title: new TranslatableMarkup('Collapsible filter'),
+)]
 class CollapsibleFilter extends DisplayExtenderPluginBase {
 
   /**

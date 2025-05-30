@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\farm_api\Functional;
 
 use Drupal\Tests\farm_test\Functional\FarmBrowserTestBase;

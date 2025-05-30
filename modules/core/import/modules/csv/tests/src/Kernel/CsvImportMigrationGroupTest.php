@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\farm_import_csv\Kernel;
 
 /**
@@ -15,8 +17,10 @@ class CsvImportMigrationGroupTest extends CsvImportTestBase {
   protected static $modules = [
     'farm_animal_type',
     'farm_equipment',
+    'farm_equipment_type',
     'farm_harvest',
     'farm_id_tag',
+    'taxonomy',
   ];
 
   /**
@@ -25,6 +29,7 @@ class CsvImportMigrationGroupTest extends CsvImportTestBase {
   public function setUp(): void {
     parent::setUp();
     $this->installConfig(['farm_animal_type']);
+    $this->installConfig(['farm_equipment_type']);
     $this->installConfig(['farm_equipment']);
     $this->installConfig(['farm_harvest']);
     $this->installConfig(['farm_import_csv_test']);

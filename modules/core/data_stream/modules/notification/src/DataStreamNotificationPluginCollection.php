@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\data_stream_notification;
 
 use Drupal\Core\Plugin\DefaultLazyPluginCollection;

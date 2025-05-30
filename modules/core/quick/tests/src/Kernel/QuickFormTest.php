@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\farm_quick\Kernel;
 
 use Drupal\Core\Form\FormState;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\farm_quick\Form\QuickFormEntityForm;
+use Drupal\farm_quick\Plugin\QuickForm\ConfigurableQuickFormInterface;
 
 /**
  * Tests for farmOS quick forms.
@@ -25,7 +28,9 @@ class QuickFormTest extends KernelTestBase {
    */
   protected static $modules = [
     'asset',
+    'entity',
     'entity_reference_revisions',
+    'farm_entity',
     'farm_field',
     'farm_log_quantity',
     'farm_quick',
@@ -54,6 +59,7 @@ class QuickFormTest extends KernelTestBase {
     $this->installEntitySchema('user');
     $this->installConfig([
       'farm_quick_test',
+      'farm_unit',
     ]);
   }
 
@@ -66,8 +72,8 @@ class QuickFormTest extends KernelTestBase {
     /** @var \Drupal\farm_quick\Entity\QuickFormInstanceInterface[] $quick_forms */
     $quick_forms = $this->quickFormInstanceManager->getInstances();
 
-    // Confirm that three quick forms were discovered.
-    $this->assertEquals(3, count($quick_forms));
+    // Confirm that four quick forms were discovered.
+    $this->assertEquals(4, count($quick_forms));
 
     // Confirm the label, description, helpText, and permissions of the test
     // quick form.
@@ -84,6 +90,7 @@ class QuickFormTest extends KernelTestBase {
     $this->assertEquals(['create test log'], $quick_forms['configurable_test']->getPlugin()->getPermissions());
 
     // Confirm default configuration.
+    $this->assertInstanceOf(ConfigurableQuickFormInterface::class, $quick_forms['configurable_test']->getPlugin());
     $this->assertEquals(['test_default' => 100], $quick_forms['configurable_test']->getPlugin()->defaultConfiguration());
 
     // Confirm overridden label, description, and helpText of the
@@ -93,6 +100,7 @@ class QuickFormTest extends KernelTestBase {
     $this->assertEquals('Overridden help text', $quick_forms['configurable_test2']->getHelpText());
 
     // Confirm configuration of configurable_test2 quick form.
+    $this->assertInstanceOf(ConfigurableQuickFormInterface::class, $quick_forms['configurable_test2']->getPlugin());
     $this->assertEquals(['test_default' => 500], $quick_forms['configurable_test2']->getPlugin()->getConfiguration());
   }
 
@@ -105,6 +113,11 @@ class QuickFormTest extends KernelTestBase {
     $form_state = (new FormState())->setValues([
       'test' => '12',
     ]);
+    // PHPStan level 2+ throws the following error on the next line:
+    // Method Drupal\Core\Form\FormBuilderInterface::submitForm() invoked with
+    // 3 parameters, 2 required.
+    // We ignore this because we are following Drupal core's pattern.
+    // @phpstan-ignore arguments.count
     \Drupal::formBuilder()->submitForm('\Drupal\farm_quick\Form\QuickForm', $form_state, 'test');
 
     // Load the form state storage.
@@ -114,13 +127,13 @@ class QuickFormTest extends KernelTestBase {
     $this->assertNotEmpty($storage['assets'][0]->id());
 
     // Confirm that the asset is linked to the quick form.
-    $this->assertEquals('test', $storage['assets'][0]->quick[0]);
+    $this->assertEquals('test', $storage['assets'][0]->get('quick')->value);
 
     // Confirm that a log was created.
     $this->assertNotEmpty($storage['logs'][0]->id());
 
     // Confirm that the log is linked to the quick form.
-    $this->assertEquals('test', $storage['logs'][0]->quick[0]);
+    $this->assertEquals('test', $storage['logs'][0]->get('quick')->value);
 
     // Confirm that the log's quantity type is test.
     $this->assertEquals('test', $storage['logs'][0]->get('quantity')->referencedEntities()[0]->bundle());

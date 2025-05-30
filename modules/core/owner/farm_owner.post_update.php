@@ -5,6 +5,8 @@
  * Updates farm_owner module.
  */
 
+declare(strict_types=1);
+
 use Drupal\system\Entity\Action;
 
 /**

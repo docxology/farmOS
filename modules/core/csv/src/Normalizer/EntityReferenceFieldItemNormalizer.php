@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_csv\Normalizer;
 
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
@@ -20,10 +22,9 @@ class EntityReferenceFieldItemNormalizer extends CoreEntityReferenceFieldItemNor
   /**
    * {@inheritdoc}
    */
-  public function normalize($field_item, $format = NULL, array $context = []): array|string|int|float|bool|\ArrayObject|NULL {
+  public function normalize($field_item, $format = NULL, array $context = []): array|string|int|float|bool|\ArrayObject|null {
 
     // Attempt to load the referenced entity.
-    /** @var \Drupal\Core\Entity\EntityInterface $entity */
     if ($entity = $field_item->get('entity')->getValue()) {
 
       // Return content entity labels, if desired.

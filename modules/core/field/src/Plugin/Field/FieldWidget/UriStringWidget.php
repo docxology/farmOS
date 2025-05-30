@@ -1,22 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_field\Plugin\Field\FieldWidget;
 
+use Drupal\Core\Field\Attribute\FieldWidget;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\Plugin\Field\FieldWidget\UriWidget;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 
 /**
  * Plugin implementation of the 'uri_string' widget.
- *
- * @FieldWidget(
- *   id = "uri_string",
- *   label = @Translation("URI string field"),
- *   field_types = {
- *     "uri",
- *   }
- * )
  */
+#[FieldWidget(
+  id: 'uri_string',
+  label: new TranslatableMarkup('URI string field'),
+  field_types: ['uri'],
+)]
 class UriStringWidget extends UriWidget {
 
   /**

@@ -5,6 +5,8 @@
  * Post update functions for farm_ui_views module.
  */
 
+declare(strict_types=1);
+
 use Drupal\views\Entity\View;
 
 /**

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\farm_group\Kernel;
 
 use Drupal\Core\StringTranslation\StringTranslationTrait;
@@ -56,7 +58,6 @@ class GroupTest extends KernelTestBase {
   protected static $modules = [
     'asset',
     'log',
-    'farm_entity_views',
     'farm_field',
     'farm_group',
     'farm_group_test',
@@ -83,9 +84,9 @@ class GroupTest extends KernelTestBase {
     $this->installEntitySchema('log');
     $this->installEntitySchema('user');
     $this->installConfig([
-      'farm_entity_views',
       'farm_group',
       'farm_group_test',
+      'farm_log_asset',
     ]);
   }
 
@@ -174,7 +175,7 @@ class GroupTest extends KernelTestBase {
     $this->assertEntityTestCache($animal, TRUE);
 
     // When the log is marked as "done", the asset's membership is updated.
-    $second_log->status = 'done';
+    $second_log->set('status', 'done');
     $second_log->save();
     $this->assertEquals($second_group->id(), $this->groupMembership->getGroup($animal)[0]->id(), 'A second group assignment log updates group membership.');
     $this->assertCorrectAssets([$animal], $this->groupMembership->getGroupMembers([$second_group]), TRUE, 'Completed group assignment logs add group members.');
@@ -219,7 +220,7 @@ class GroupTest extends KernelTestBase {
     // When a group assignment log is created with no group references, it
     // effectively "unsets" the asset's group membership.
     $this->assertFalse($this->groupMembership->hasGroup($animal), 'Asset group membership can be unset.');
-    $this->assertCorrectAssets([], $this->groupMembership->getGroup($animal), 'Unset group membership does not reference any groups.');
+    $this->assertCorrectAssets([], $this->groupMembership->getGroup($animal), TRUE, 'Unset group membership does not reference any groups.');
     $this->assertCorrectAssets([], $this->groupMembership->getGroupMembers([$first_group]), TRUE, 'Unset group membership unsets group members.');
     $this->assertCorrectAssets([], $this->groupMembership->getGroupMembers([$second_group]), TRUE, 'Unset group membership unsets group members.');
 
@@ -282,6 +283,7 @@ class GroupTest extends KernelTestBase {
 
     // Create two group assets.
     /** @var \Drupal\asset\Entity\AssetInterface[] $groups */
+    $groups = [];
     $group = Asset::create([
       'type' => 'group',
       'name' => $this->randomMachineName(),
@@ -416,7 +418,7 @@ class GroupTest extends KernelTestBase {
     $this->assertCorrectAssets([], $this->groupMembership->getGroupMembers([$first_group], TRUE), TRUE, 'The first group has no recursive members.');
 
     // Save the second log to create the nested group membership.
-    $second_log->status = 'done';
+    $second_log->set('status', 'done');
     $second_log->save();
 
     // Assert that the second group has a group and a single member.
@@ -882,6 +884,108 @@ class GroupTest extends KernelTestBase {
     $this->assertEquals($this->logLocation->getGeometry($logs[0]), $this->assetLocation->getGeometry($asset, $timestamps[4] + 1));
     $this->assertEquals($logs[0]->id(), $this->assetLocation->getMovementLog($asset, $timestamps[4] + 1)->id());
     $this->assertCorrectAssets([$asset, $group], $this->assetLocation->getAssetsByLocation([$locations[0]], $timestamps[4] + 1), TRUE);
+  }
+
+  /**
+   * Regression test for issue #886.
+   *
+   * Test that creating an asset movement log in the past does not override the
+   * latest group movement log.
+   *
+   * This is a regression test for: Creating old movement logs disrupts current
+   * location logic #886
+   *
+   * @see https://github.com/farmOS/farmOS/issues/886
+   */
+  public function testPastAssetMovement() {
+
+    // Create an animal asset.
+    /** @var \Drupal\asset\Entity\AssetInterface $asset */
+    $asset = Asset::create([
+      'type' => 'animal',
+      'name' => $this->randomMachineName(),
+      'status' => 'active',
+    ]);
+    $asset->save();
+
+    // Create two pasture location assets.
+    /** @var \Drupal\asset\Entity\AssetInterface[] $locations */
+    $locations = [];
+    $location = Asset::create([
+      'type' => 'pasture',
+      'name' => $this->randomMachineName(),
+      'status' => 'active',
+      'intrinsic_geometry' => $this->reduceWkt($this->wktGenerator->wktGeneratePolygon(NULL, rand(3, 7))),
+      'is_fixed' => TRUE,
+      'is_location' => TRUE,
+    ]);
+    $location->save();
+    $locations[] = $location;
+    $location = Asset::create([
+      'type' => 'pasture',
+      'name' => $this->randomMachineName(),
+      'status' => 'active',
+      'intrinsic_geometry' => $this->reduceWkt($this->wktGenerator->wktGeneratePolygon(NULL, rand(3, 7))),
+      'is_fixed' => TRUE,
+      'is_location' => TRUE,
+    ]);
+    $location->save();
+    $locations[] = $location;
+
+    // Create a group asset.
+    /** @var \Drupal\asset\Entity\AssetInterface $group */
+    $group = Asset::create([
+      'type' => 'group',
+      'name' => $this->randomMachineName(),
+      'status' => 'active',
+    ]);
+    $group->save();
+
+    // Assign asset to group.
+    $group_assignment_log = Log::create([
+      'type' => 'test',
+      'status' => 'done',
+      'is_group_assignment' => TRUE,
+      'group' => ['target_id' => $group->id()],
+      'asset' => ['target_id' => $asset->id()],
+    ]);
+    $group_assignment_log->save();
+
+    // Move group to location 1.
+    $group_movement_log = Log::create([
+      'type' => 'test',
+      'status' => 'done',
+      'is_movement' => TRUE,
+      'location' => ['target_id' => $locations[0]->id()],
+      'asset' => ['target_id' => $group->id()],
+    ]);
+    $group_movement_log->save();
+
+    // Confirm that the asset is located where the group is.
+    $this->assertEquals(TRUE, $this->assetLocation->hasLocation($asset));
+    $this->assertEquals(TRUE, $this->assetLocation->hasGeometry($asset));
+    $this->assertEquals($this->logLocation->getLocation($group_movement_log), $this->assetLocation->getLocation($asset));
+    $this->assertEquals($this->logLocation->getGeometry($group_movement_log), $this->assetLocation->getGeometry($asset));
+    $this->assertEquals($group_movement_log->id(), $this->assetLocation->getMovementLog($asset)->id());
+    $this->assertCorrectAssets([$asset, $group], $this->assetLocation->getAssetsByLocation([$locations[0]]), TRUE);
+
+    // Move asset to location 2 with a timestamp of one year ago.
+    $asset_movement_log = Log::create([
+      'timestamp' => strtotime('1 year ago'),
+      'type' => 'test',
+      'status' => 'done',
+      'is_movement' => TRUE,
+      'location' => ['target_id' => $locations[1]->id()],
+      'asset' => ['target_id' => $asset->id()],
+    ]);
+    $asset_movement_log->save();
+
+    // Confirm that the asset is still located where the group is.
+    $this->assertEquals($this->assetLocation->getLocation($group), $this->assetLocation->getLocation($asset));
+    $this->assertEquals($this->assetLocation->getGeometry($group), $this->assetLocation->getGeometry($asset));
+    $this->assertEquals($group_movement_log->id(), $this->assetLocation->getMovementLog($asset)->id());
+    $this->assertCorrectAssets([$asset, $group], $this->assetLocation->getAssetsByLocation([$locations[0]]), TRUE);
+    $this->assertCorrectAssets([], $this->assetLocation->getAssetsByLocation([$locations[1]]), TRUE);
   }
 
 }

@@ -5,6 +5,8 @@
  * Quantity module.
  */
 
+declare(strict_types=1);
+
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Render\Element;

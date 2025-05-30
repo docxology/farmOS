@@ -5,6 +5,8 @@
  * The farmOS UI Menu module.
  */
 
+declare(strict_types=1);
+
 use Drupal\farm_ui_menu\Menu\DefaultSecondaryLocalTaskProvider;
 use Drupal\farm_ui_menu\Render\Element\FarmAdminToolbar;
 

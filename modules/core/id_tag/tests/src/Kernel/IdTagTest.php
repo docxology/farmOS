@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\farm_id_tag\Kernel;
 
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\asset\Entity\Asset;
+use Drupal\farm_id_tag\Plugin\Field\FieldType\IdTagItem;
 
 /**
  * Test ID tag field.
@@ -55,9 +58,11 @@ class IdTagTest extends KernelTestBase {
     // Confirm that the asset was created with expected ID tag values.
     $assets = Asset::loadMultiple();
     $this->assertCount(1, $assets);
-    $this->assertEquals('123456', $assets[1]->get('id_tag')->id);
-    $this->assertEquals('other', $assets[1]->get('id_tag')->type);
-    $this->assertEquals('Frame', $assets[1]->get('id_tag')->location);
+    $id_tag = $assets[1]->get('id_tag')->first();
+    $this->assertInstanceOf(IdTagItem::class, $id_tag);
+    $this->assertEquals('123456', $id_tag->id);
+    $this->assertEquals('other', $id_tag->type);
+    $this->assertEquals('Frame', $id_tag->location);
 
     // Confirm that all sub-fields are optional.
     $asset = Asset::create([
@@ -90,6 +95,23 @@ class IdTagTest extends KernelTestBase {
     $violations = $asset->validate();
     $this->assertNotEmpty($violations);
     $this->assertEquals('Invalid ID tag type: invalid', $violations[0]->getMessage());
+
+    // Confirm that multiple ID tags are validated.
+    $asset = Asset::create([
+      'name' => $this->randomString(),
+      'type' => 'test',
+      'id_tag' => [
+        [
+          'type' => 'invalid',
+        ],
+        [
+          'type' => 'invalid',
+        ],
+      ],
+    ]);
+    $violations = $asset->validate();
+    $this->assertCount(2, $violations);
+    $this->assertEquals('Invalid ID tag type: invalid', $violations[1]->getMessage());
   }
 
 }

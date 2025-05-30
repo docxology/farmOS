@@ -5,6 +5,8 @@
  * Install, update and uninstall function for the farm_geo module.
  */
 
+declare(strict_types=1);
+
 /**
  * Implements hook_requirements().
  */

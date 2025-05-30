@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_inventory\Plugin\views\field;
 
 use Drupal\views\Plugin\views\field\EntityField;

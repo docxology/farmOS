@@ -1,22 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_inventory\Plugin\Field\FieldType;
 
+use Drupal\Core\Field\Attribute\FieldType;
 use Drupal\Core\Field\FieldItemBase;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\TypedData\DataDefinition;
 
 /**
  * Plugin implementation of the 'Inventory' field type.
  *
- * @FieldType(
- *   id = "inventory",
- *   label = @Translation("Inventory"),
- *   description = @Translation("This field stores asset inventory information."),
- *   category = @Translation("farmOS"),
- *   no_ui = TRUE,
- * )
+ * @property string $measure
+ * @property string $value
+ * @property string $units
  */
+#[FieldType(
+  id: 'inventory',
+  label: new TranslatableMarkup('Inventory'),
+  description: new TranslatableMarkup('This field stores asset inventory information.'),
+  category: 'farmOS',
+  no_ui: TRUE,
+)]
 class InventoryItem extends FieldItemBase {
 
   /**
@@ -64,7 +71,7 @@ class InventoryItem extends FieldItemBase {
     $measure = $this->get('measure');
     $value = $this->get('value');
     $units = $this->get('units');
-    return ($measure === NULL || $measure->getValue() === '') && ($value === NULL || $value->getValue() === '') && ($units === NULL || $units->getValue() === '');
+    return $measure->getValue() === '' && $value->getValue() === '' && $units->getValue() === '';
   }
 
 }

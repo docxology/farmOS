@@ -5,6 +5,8 @@
  * Land asset module.
  */
 
+declare(strict_types=1);
+
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 
@@ -59,4 +61,11 @@ function farm_land_farm_ui_theme_region_items(string $entity_type) {
     default:
       return [];
   }
+}
+
+/**
+ * Implements hook_farm_api_allow_resource_types().
+ */
+function farm_land_farm_api_allow_resource_types() {
+  return ['land_type'];
 }

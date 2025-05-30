@@ -5,6 +5,8 @@
  * Contains farm_parent.module.
  */
 
+declare(strict_types=1);
+
 use Drupal\Core\Entity\EntityTypeInterface;
 
 /**

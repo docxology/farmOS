@@ -1,29 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_log_category\Plugin\Action;
 
+use Drupal\Core\Action\Attribute\Action;
 use Drupal\Core\Action\Plugin\Action\EntityActionBase;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\TempStore\PrivateTempStoreFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Redirects to a form to add categories to a log.
- *
- * @Action(
- *   id = "log_categorize_action",
- *   action_label = @Translation("Categorize log"),
- *   type = "log",
- *   confirm_form_route_name = "farm_log_category.log_categorize_action_form"
- * )
  */
+#[Action(
+  id: 'log_categorize_action',
+  action_label: new TranslatableMarkup('Categorize log'),
+  type: 'log',
+  confirm_form_route_name: 'farm_log_category.log_categorize_action_form',
+)]
 class LogCategorize extends EntityActionBase {
 
   /**
-   * The tempstore object.
+   * The private temp store.
    *
-   * @var \Drupal\Core\TempStore\SharedTempStore
+   * @var \Drupal\Core\TempStore\PrivateTempStore
    */
   protected $tempStore;
 
@@ -76,7 +79,7 @@ class LogCategorize extends EntityActionBase {
    */
   public function executeMultiple(array $entities) {
     /** @var \Drupal\Core\Entity\EntityInterface[] $entities */
-    $this->tempStore->set($this->currentUser->id(), $entities);
+    $this->tempStore->set((string) $this->currentUser->id(), $entities);
   }
 
   /**

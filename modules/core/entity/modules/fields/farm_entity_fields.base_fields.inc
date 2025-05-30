@@ -5,6 +5,8 @@
  * Code for creating common farmOS entity base field definitions.
  */
 
+declare(strict_types=1);
+
 /**
  * Define common asset base fields.
  */

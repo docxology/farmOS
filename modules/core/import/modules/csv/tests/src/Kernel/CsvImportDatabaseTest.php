@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\farm_import_csv\Kernel;
 
 use Drupal\taxonomy\Entity\Term;

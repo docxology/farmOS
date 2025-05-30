@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_map\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBase;
@@ -90,7 +92,7 @@ class MapType extends ConfigEntityBase implements MapTypeInterface {
    * {@inheritdoc}
    */
   public function getMapBehaviors() {
-    return $this->behaviors ?? [];
+    return empty($this->behaviors) ? [] : $this->behaviors;
   }
 
   /**

@@ -1,29 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_parent\Plugin\Action;
 
+use Drupal\Core\Action\Attribute\Action;
 use Drupal\Core\Action\Plugin\Action\EntityActionBase;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\TempStore\PrivateTempStoreFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Action that assigns asset parent.
- *
- * @Action(
- *   id = "asset_parent_action",
- *   label = @Translation("Assign asset parent."),
- *   type = "asset",
- *   confirm_form_route_name = "farm_parent.asset_parent_action_form"
- * )
  */
+#[Action(
+  id: 'asset_parent_action',
+  label: new TranslatableMarkup('Assign asset parent.'),
+  type: 'asset',
+  confirm_form_route_name: 'farm_parent.asset_parent_action_form',
+)]
 class AssetParent extends EntityActionBase {
 
   /**
-   * The tempstore object.
+   * The private temp store.
    *
-   * @var \Drupal\Core\TempStore\SharedTempStore
+   * @var \Drupal\Core\TempStore\PrivateTempStore
    */
   protected $tempStore;
 
@@ -76,7 +79,7 @@ class AssetParent extends EntityActionBase {
    */
   public function executeMultiple(array $entities) {
     /** @var \Drupal\Core\Entity\EntityInterface[] $entities */
-    $this->tempStore->set($this->currentUser->id(), $entities);
+    $this->tempStore->set((string) $this->currentUser->id(), $entities);
   }
 
   /**

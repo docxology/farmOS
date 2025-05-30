@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_api\EventSubscriber;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -35,7 +37,7 @@ class CorsResponseEventSubscriber implements EventSubscriberInterface {
   /**
    * {@inheritdoc}
    */
-  public static function getSubscribedEvents() {
+  public static function getSubscribedEvents(): array {
     $events[KernelEvents::RESPONSE][] = ['addCorsHeaders'];
     return $events;
   }
@@ -59,6 +61,7 @@ class CorsResponseEventSubscriber implements EventSubscriberInterface {
     $request_origin = reset($request_headers['origin']);
 
     // Load allowed_origins from all consumer entities.
+    /** @var \Drupal\consumers\Entity\ConsumerInterface[] $consumers */
     $consumers = $this->entityTypeManager->getStorage('consumer')->loadMultiple();
     $allowed_origins = array_reduce($consumers, function ($carry, $consumer) {
       /** @var \Drupal\Core\Field\FieldItemListInterface $list */

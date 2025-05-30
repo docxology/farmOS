@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\quantity;
 
 use Drupal\entity\EntityViewsData;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\farm_quick_planting\Kernel;
 
 use Drupal\Tests\farm_quick\Kernel\QuickFormTestBase;

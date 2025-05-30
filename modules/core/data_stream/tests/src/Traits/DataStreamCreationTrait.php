@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\data_stream\Traits;
 
 use Drupal\data_stream\DataStreamStorageInterface;

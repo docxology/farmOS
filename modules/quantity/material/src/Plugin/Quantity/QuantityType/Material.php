@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_quantity_material\Plugin\Quantity\QuantityType;
 
 use Drupal\farm_entity\Plugin\Quantity\QuantityType\FarmQuantityType;

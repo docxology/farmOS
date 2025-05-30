@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\data_stream_notification\Kernel;
 
 use Drupal\Component\Serialization\Json;
@@ -61,7 +63,7 @@ class EmailDeliveryTest extends DataStreamTestBase {
     // Create a basic data stream for testing.
     $this->dataStream = $this->createDataStreamEntity([
       'type' => 'basic',
-      'private_key' => hash('md5', mt_rand()),
+      'private_key' => hash('md5', (string) mt_rand()),
       'public' => FALSE,
     ]);
 
@@ -104,7 +106,7 @@ class EmailDeliveryTest extends DataStreamTestBase {
 
     // Get the first configured email delivery plugin.
     $collections = $this->dataStreamNotification->getPluginCollections();
-    $email_delivery = $collections['delivery']->get(0);
+    $email_delivery = $collections['delivery']->get((string) 0);
 
     // Build a list of condition summaries to test against.
     $condition_summaries = array_map(function ($condition) {

@@ -5,6 +5,8 @@
  * Hooks provided by farm_import_csv.
  */
 
+declare(strict_types=1);
+
 use Drupal\Core\Entity\EntityInterface;
 
 /**
@@ -26,7 +28,7 @@ function farm_import_csv_file_download($uri) {
   }
 
   // Get file usage.
-  /** @var \Drupal\file\FileUsage\FileUsageInterface $file_usage */
+  /** @var \Drupal\file\FileUsage\FileUsageInterface $usage_service */
   $usage_service = \Drupal::service('file.usage');
   $usages = $usage_service->listUsage($file);
 

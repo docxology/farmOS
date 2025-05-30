@@ -5,6 +5,8 @@
  * Install and uninstall functions for the farm_api_default_consumer module.
  */
 
+declare(strict_types=1);
+
 use Drupal\consumers\Entity\Consumer;
 
 /**

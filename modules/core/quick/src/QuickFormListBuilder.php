@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_quick;
 
 use Drupal\Core\Config\Entity\ConfigEntityListBuilder;
@@ -138,6 +140,7 @@ class QuickFormListBuilder extends ConfigEntityListBuilder {
     $operations = parent::getDefaultOperations($entity);
 
     // Override operations for default quick form instances.
+    /** @var \Drupal\farm_quick\Entity\QuickFormInstanceInterface $entity */
     if ($entity->isNew()) {
 
       // Remove edit operation.

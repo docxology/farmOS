@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_export_csv\Routing;
 
 use Drupal\Core\Entity\EntityTypeInterface;
@@ -42,6 +44,7 @@ class EntityCsvActionRouteProvider implements EntityRouteProviderInterface {
       $route->setRequirement('_user_is_logged_in', 'TRUE');
       return $route;
     }
+    return NULL;
   }
 
 }

@@ -1,8 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\farm_import_csv\Kernel;
 
 use Drupal\asset\Entity\Asset;
+use Drupal\farm_id_tag\Plugin\Field\FieldType\IdTagItem;
+use Drupal\taxonomy\Entity\Term;
+use Drupal\text\Plugin\Field\FieldType\TextLongItem;
 
 /**
  * Tests for asset CSV importers.
@@ -18,6 +23,7 @@ class AssetCsvImportTest extends CsvImportTestBase {
     'entity',
     'farm_entity',
     'farm_equipment',
+    'farm_equipment_type',
     'farm_id_tag',
     'farm_land',
     'farm_land_types',
@@ -25,6 +31,7 @@ class AssetCsvImportTest extends CsvImportTestBase {
     'farm_map',
     'farm_parent',
     'geofield',
+    'taxonomy',
   ];
 
   /**
@@ -35,6 +42,7 @@ class AssetCsvImportTest extends CsvImportTestBase {
     $this->installConfig([
       'farm_id_tag',
       'farm_equipment',
+      'farm_equipment_type',
       'farm_land',
       'farm_land_types',
     ]);
@@ -48,6 +56,13 @@ class AssetCsvImportTest extends CsvImportTestBase {
    * Test asset CSV importer.
    */
   public function testAssetCsvImport() {
+
+    // Create a Tractor equipment type term.
+    $term = Term::create([
+      'name' => 'Tractor',
+      'vid' => 'equipment_type',
+    ]);
+    $term->save();
 
     // Run the CSV import.
     $this->importCsv('equipment.csv', 'csv_asset:equipment');
@@ -67,6 +82,9 @@ class AssetCsvImportTest extends CsvImportTestBase {
           'type' => '',
           'location' => '',
         ],
+        'equipment_types' => [
+          'Tractor',
+        ],
         'parents' => [],
         'notes' => 'Inherited from Grandpa',
         'status' => 'archived',
@@ -80,6 +98,9 @@ class AssetCsvImportTest extends CsvImportTestBase {
           'id' => '67890',
           'type' => 'eid',
           'location' => 'trunk',
+        ],
+        'equipment_types' => [
+          'Tractor',
         ],
         'parents' => [],
         'notes' => 'Purchased recently',
@@ -95,6 +116,7 @@ class AssetCsvImportTest extends CsvImportTestBase {
           'type' => '',
           'location' => '',
         ],
+        'equipment_types' => [],
         'parents' => [
           'Test parent',
         ],
@@ -107,22 +129,51 @@ class AssetCsvImportTest extends CsvImportTestBase {
       if ($id <= 1) {
         continue;
       }
+
+      // Confirm bundle and name are correct.
       $this->assertEquals('equipment', $asset->bundle());
       $this->assertEquals($expected_values[$id]['name'], $asset->label());
+
+      // Confirm manufacturer, model, and serial_number are set.
       $this->assertEquals($expected_values[$id]['manufacturer'], $asset->get('manufacturer')->value);
       $this->assertEquals($expected_values[$id]['model'], $asset->get('model')->value);
       $this->assertEquals($expected_values[$id]['serial_number'], $asset->get('serial_number')->value);
-      $this->assertEquals($expected_values[$id]['id_tag']['id'], $asset->get('id_tag')->id);
-      $this->assertEquals($expected_values[$id]['id_tag']['type'], $asset->get('id_tag')->type);
-      $this->assertEquals($expected_values[$id]['id_tag']['location'], $asset->get('id_tag')->location);
+
+      // Confirm ID tag is set.
+      // If no tag ID is provided ensure we have an empty field.
+      if (empty($expected_values[$id]['id_tag']['id'])) {
+        $this->assertTrue($asset->get('id_tag')->isEmpty());
+      }
+      // Else check that all id_tag properties match.
+      else {
+        $id_tag = $asset->get('id_tag')->first();
+        $this->assertInstanceOf(IdTagItem::class, $id_tag);
+        $this->assertEquals($expected_values[$id]['id_tag']['id'], $id_tag->id);
+        $this->assertEquals($expected_values[$id]['id_tag']['type'], $id_tag->type);
+        $this->assertEquals($expected_values[$id]['id_tag']['location'], $id_tag->location);
+      }
+
+      // Confirm that equipment type is set.
+      $equipment_types = $asset->get('equipment_type')->referencedEntities();
+      $this->assertEquals(count($expected_values[$id]['equipment_types']), count($equipment_types));
+      foreach ($equipment_types as $equipment_type) {
+        $this->assertContains($equipment_type->label(), $expected_values[$id]['equipment_types']);
+      }
+
+      // Confirm that parent is set.
       $parents = $asset->get('parent')->referencedEntities();
       $this->assertEquals(count($expected_values[$id]['parents']), count($parents));
       foreach ($parents as $parent) {
         $this->assertContains($parent->label(), $expected_values[$id]['parents']);
       }
+
+      // Confirm notes and status are set.
       $this->assertEquals($expected_values[$id]['notes'], $asset->get('notes')->value);
-      $this->assertEquals('default', $asset->get('notes')->format);
+      $this->assertInstanceOf(TextLongItem::class, $asset->get('notes')->first());
+      $this->assertEquals('default', $asset->get('notes')->first()->format);
       $this->assertEquals($expected_values[$id]['status'], $asset->get('status')->value);
+
+      // Confirm revision message is set.
       $this->assertEquals('Imported via CSV.', $asset->getRevisionLogMessage());
     }
 

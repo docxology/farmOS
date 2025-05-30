@@ -5,6 +5,8 @@
  * Install, update and uninstall functions for the farm_import_csv module.
  */
 
+declare(strict_types=1);
+
 use Drupal\Core\Entity\EntityTypeInterface;
 
 /**

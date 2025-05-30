@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\farm_import_csv\Functional;
 
 use Drupal\Tests\farm_test\Functional\FarmBrowserTestBase;
@@ -90,7 +92,17 @@ class CsvImportTest extends FarmBrowserTestBase {
       'name: Name of the asset. Required.',
       'parents: Parents of the asset. Accepts asset names, ID tags, UUIDs, and IDs. Multiple assets can be separated by commas with the whole cell wrapped in quotes.',
       'notes: Notes about the asset.',
+      'is location: Whether this asset is a location. Accepts most boolean values. Leave this blank to use the default for this asset type.',
+      'is fixed: Whether this asset has a fixed location. Accepts most boolean values. Leave this blank to use the default for this asset type.',
+      'intrinsic geometry: The intrinsic geometry of the asset in WKT format. This is only used if the asset has a fixed location.',
       'status: Status of the asset.',
+      'id tag: ID tag.',
+      'id tag type: The type of ID tag. Allowed values: eid, other.',
+      'id tag location: Location of the ID tag.',
+      'equipment type: Enter the type of equipment. Multiple values can be separated by commas with the whole cell wrapped in quotes.',
+      'manufacturer',
+      'model',
+      'serial number',
     ];
     foreach ($log_columns as $description) {
       $this->assertSession()->pageTextContains($description);
@@ -108,7 +120,13 @@ class CsvImportTest extends FarmBrowserTestBase {
       'quantity units: Units of measurement of the quantity. A new term in the units taxonomy will be created if necessary.',
       'quantity label: Label of the quantity.',
       'notes: Notes about the log.',
+      'categories: Log category taxonomy terms. Multiple terms can be separated by commas with the whole cell wrapped in quotes.',
+      'geometry: The geometry of the log in WKT format.',
+      'is movement: Whether this log represents an asset movement. Accepts most boolean values. Leave this blank to use the default for this log type.',
       'status: Status of the log.',
+      'equipment: What equipment was used? Accepts asset names, ID tags, UUIDs, and IDs. Multiple values can be separated by commas with the whole cell wrapped in quotes.',
+      'lot number: If this harvest is part of a batch or lot, enter the lot number here.',
+      'test string',
     ];
     foreach ($log_columns as $description) {
       $this->assertSession()->pageTextContains($description);

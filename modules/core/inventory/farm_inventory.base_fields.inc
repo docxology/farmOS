@@ -5,6 +5,8 @@
  * Code for creating inventory base field definitions.
  */
 
+declare(strict_types=1);
+
 use Drupal\farm_inventory\Field\AssetInventoryItemList;
 
 /**

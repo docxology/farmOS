@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\farm_quick_inventory\Kernel;
 
 use Drupal\Core\Datetime\DrupalDateTime;
@@ -27,6 +29,7 @@ class QuickInventoryTest extends QuickFormTestBase {
   protected static $modules = [
     'farm_activity',
     'farm_equipment',
+    'farm_equipment_type',
     'farm_inventory',
     'farm_observation',
     'farm_quantity_standard',
@@ -41,6 +44,7 @@ class QuickInventoryTest extends QuickFormTestBase {
     parent::setUp();
     $this->installConfig([
       'farm_activity',
+      'farm_equipment_type',
       'farm_equipment',
       'farm_observation',
       'farm_quantity_standard',

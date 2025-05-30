@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\data_stream;
 
 use Drupal\data_stream\Entity\DataStreamInterface;

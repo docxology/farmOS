@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\farm_geo\Normalizer;
 
 use Drupal\Core\Entity\ContentEntityInterface;
@@ -42,7 +44,7 @@ class ContentEntityGeometryNormalizer implements NormalizerInterface, Serializer
   /**
    * {@inheritdoc}
    */
-  public function normalize($object, $format = NULL, array $context = []) {
+  public function normalize($object, $format = NULL, array $context = []): array|bool|string|int|float|null|\ArrayObject {
 
     // Build GeometryWrapper objects.
     $geometries = [];
@@ -93,13 +95,18 @@ class ContentEntityGeometryNormalizer implements NormalizerInterface, Serializer
 
     // Normalize the GeometryWrapper object to the target type.
     $geometry_wrapper = new GeometryWrapper($geometry, $properties);
+    // PHPStan level 2+ throws the following error on the next line:
+    // Call to an undefined method
+    // Symfony\Component\Serializer\SerializerInterface::normalize().
+    // We ignore this because we are following Drupal core's pattern.
+    // @phpstan-ignore method.notFound
     return $this->serializer->normalize($geometry_wrapper, $format, $context);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function supportsNormalization($data, $format = NULL) {
+  public function supportsNormalization($data, $format = NULL): bool {
 
     // Check that the data is a content entity.
     // Only formats that are prefixed with "geometry_" are supported.

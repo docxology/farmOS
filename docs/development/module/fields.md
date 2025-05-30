@@ -104,6 +104,118 @@ function mymodule_farm_entity_bundle_field_info(EntityTypeInterface $entity_type
 }
 ```
 
+### Update hook
+
+The code above will only create new fields when the module is first installed.
+If your module is already installed, and you want to add a new base or bundle
+field to an entity type, you will need to provide an [update hook](updates) (in
+addition to the base/bundle field declaration described above), which instructs
+Drupal to install the new field when database updates are run (either via
+`/update.php` or `drush updb`). This update hook should be added to a file
+called `[module-name].post_update.php` in the root of the module's directory.
+The update hook is just a PHP function with a name in the form:
+`[module-name]_post_update_[update-name]()`.
+
+For example, the following will install the same `myfield` bundle field declared
+in the `mymodule.module` example above:
+
+`mymodule.post_update.php`:
+
+```php
+<?php
+
+/**
+ * @file
+ * Post update hooks for mymodule.
+ */
+
+declare(strict_types=1);
+
+/**
+ * Add "My new field" to logs.
+ */
+function mymodule_post_update_add_myfield(&$sandbox) {
+  $options = [
+    'type' => 'string',
+    'label' => t('My new field'),
+    'description' => t('My field description.'),
+    'weight' => [
+      'form' => 10,
+      'view' => 10,
+    ],
+  ];
+  $field_definition = \Drupal::service('farm_field.factory')->bundleFieldDefinition($options);
+  \Drupal::entityDefinitionUpdateManager()->installFieldStorageDefinition('myfield', 'log', 'mymodule', $field_definition);
+  \Drupal::service('entity_field.manager')->rebuildBundleFieldMap();
+}
+```
+
+There are a few things to make note of in this example:
+
+1. Always copy the `$options` verbatim from your other hook. Do not try to
+   reuse code in this context, because you can't predict when this update hook
+   will run. For example, if the end user does not update their modules
+   frequently, and the field changes multiple times across versions, it could
+   result in unpredictable issues. Update hooks should always be very specific
+   about the changes they make, and not rely on external code that may change.
+2. You do not need to specify that this field will only be installed on `input`
+   logs in this context. The update hook is only responsible for creating the
+   necessary database table(s) for the field, but the implementation of
+   `hook_farm_entity_bundle_field_info()` is what tells Drupal which bundle(s)
+   the field can be used on.
+3. This example installs a bundle field. To install a base field, replace
+   `->bundleFieldDefinition($options)` with `->baseFieldDefinition($options)`.
+4. The last line (which calls `rebuildBundleFieldMap()`) is technically only
+   necessary when installing bundle fields, but it doesn't hurt to include it
+   for base fields as well. The reason this is necessary is to work around an
+   outstanding Drupal core issue:
+   [Issue #3045509: EntityFieldManager::getFieldMap() doesn't show bundle fields](https://www.drupal.org/project/drupal/issues/3045509)
+
+### Views and CSV Importers
+
+Bundle fields will automatically be added to farmOS Views provided by the
+`farm_ui_views` module, like `/assets` and `/logs`, and to the default
+[CSV importers](csv) provided by the `farm_import_csv` module. Base fields,
+however, are not automatically added to these. Modules that add base fields must
+implement `hook_farm_ui_views_base_fields()` and
+`hook_farm_import_csv_base_fields()` in order to tell farmOS to include them.
+
+For example, to add the `myfield` base field declared in the example
+`hook_entity_base_field_info()` hook above, the following additional hooks can
+be added to `mymodule.module`:
+
+```php
+/**
+ * Implements hook_farm_ui_views_base_fields(). 
+ */
+function mymodule_farm_ui_views_base_fields(string $entity_type) {
+  $base_fields = [];
+
+  // Add the myfield base field to farmOS log Views.
+  if ($entity_type == 'log') {
+    $base_fields[] = 'myfield';
+  }
+
+  return $base_fields;
+}
+```
+
+```php
+/**
+ * Implements hook_farm_import_csv_base_fields(). 
+ */
+function mymodule_farm_import_csv_base_fields(string $entity_type) {
+  $base_fields = [];
+
+  // Add the myfield base field to log CSV importers.
+  if ($entity_type == 'log') {
+    $base_fields[] = 'myfield';
+  }
+
+  return $base_fields;
+}
+```
+
 ## Select options
 
 Certain fields on assets and logs include a list of options to select from.

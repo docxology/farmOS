@@ -5,6 +5,8 @@
  * Provides Views runtime hooks for farm_ui_map.module.
  */
 
+declare(strict_types=1);
+
 use Drupal\asset\Entity\AssetType;
 use Drupal\views\Entity\View;
 use Drupal\views\ViewExecutable;
@@ -34,7 +36,11 @@ function farm_ui_map_views_pre_view(ViewExecutable $view, $display_id, array &$a
 
     // If a type argument is present, add bundle-specific exposed filters.
     if (!empty($args[0]) && $args[0] != 'all') {
-      farm_ui_views_add_bundle_handlers($view, $display_id, $args[0], 'filter');
+      /** @var \Drupal\entity\BundleFieldDefinition[] $bundle_fields */
+      $bundle_fields = \Drupal::entityTypeManager()->getHandler($view->getBaseEntityType()->id(), 'bundle_plugin')->getFieldDefinitions($args[0]);
+      foreach (array_reverse($bundle_fields) as $field_definition) {
+        farm_ui_views_add_handlers($view, $display_id, 'filter', $field_definition);
+      }
     }
   }
 }
@@ -64,6 +70,7 @@ function farm_ui_map_views_pre_render(ViewExecutable $view) {
     $layer_group = $view->getBaseEntityType()->getCollectionLabel();
 
     // Get exposed filters.
+    /** @var array<string,string[]> $exposed_filters */
     $exposed_filters = $view->getExposedInput();
 
     // Add multiple asset layers to the page of all assets.
@@ -113,9 +120,8 @@ function farm_ui_map_views_pre_render(ViewExecutable $view) {
       $type = AssetType::load($bundle);
 
       // Load the map layer style.
-      /** @var \Drupal\farm_map\Entity\LayerStyleInterface $layer_style */
-      $layer_style = \Drupal::service('farm_map.layer_style_loader')->load(['asset_type' => $bundle]);
-      if (!is_null($layer_style)) {
+      /** @var \Drupal\farm_map\Entity\LayerStyleInterface|null $layer_style */
+      if ($layer_style = \Drupal::service('farm_map.layer_style_loader')->load(['asset_type' => $bundle])) {
         $color = $layer_style->get('color');
       }
 

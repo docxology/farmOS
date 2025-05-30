@@ -1,6 +1,8 @@
 <?php
 
-namespace Druapl\tests\farm_login\Functional;
+declare(strict_types=1);
+
+namespace Drupal\tests\farm_login\Functional;
 
 use Drupal\Component\Serialization\Json;
 use Drupal\Tests\farm_api\Functional\OauthTestBase;
@@ -53,6 +55,10 @@ class OauthPasswordTest extends OauthTestBase {
       'client_id' => $this->client->get('client_id')->value,
       'client_secret' => $this->clientSecret,
       'username' => $this->user->getAccountName(),
+      // PHPStan level 2+ throws the following error on the next line:
+      // Access to an undefined property Drupal\user\UserInterface::$pass_raw.
+      // We ignore this because we are following Drupal core's pattern.
+      // @phpstan-ignore property.notFound
       'password' => $this->user->pass_raw,
       'scope' => $this->scope,
     ];
@@ -77,6 +83,10 @@ class OauthPasswordTest extends OauthTestBase {
       'client_id' => $this->client->get('client_id')->value,
       'client_secret' => $this->clientSecret,
       'username' => $this->user->getAccountName(),
+      // PHPStan level 2+ throws the following error on the next line:
+      // Access to an undefined property Drupal\user\UserInterface::$pass_raw.
+      // We ignore this because we are following Drupal core's pattern.
+      // @phpstan-ignore property.notFound
       'password' => $this->user->pass_raw,
       'scope' => $this->scope,
     ];

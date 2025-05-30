@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\data_stream_notification\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBase;
@@ -163,6 +165,7 @@ class DataStreamNotification extends ConfigEntityBase implements DataStreamNotif
     parent::postDelete($storage, $entities);
 
     // Clear the notification state on deletion.
+    /** @var \Drupal\data_stream_notification\Entity\DataStreamNotificationInterface $entity */
     foreach ($entities as $entity) {
       \Drupal::state()->delete($entity->getStateKey());
     }
@@ -254,12 +257,9 @@ class DataStreamNotification extends ConfigEntityBase implements DataStreamNotif
   }
 
   /**
-   * Helper function to return the state key for the notification.
-   *
-   * @return string
-   *   The state key.
+   * {@inheritdoc}
    */
-  protected function getStateKey() {
+  public function getStateKey(): string {
     return 'data_stream_notification.state.' . $this->id();
   }
 

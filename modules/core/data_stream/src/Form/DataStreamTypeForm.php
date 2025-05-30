@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\data_stream\Form;
 
 use Drupal\Core\Entity\EntityForm;
@@ -9,6 +11,13 @@ use Drupal\Core\Form\FormStateInterface;
  * Form controller for data stream type entities.
  */
 class DataStreamTypeForm extends EntityForm {
+
+  /**
+   * The data stream type entity.
+   *
+   * @var \Drupal\data_stream\Entity\DataStreamTypeInterface
+   */
+  protected $entity;
 
   /**
    * {@inheritdoc}

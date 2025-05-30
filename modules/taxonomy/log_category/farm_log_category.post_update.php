@@ -5,6 +5,8 @@
  * Update hooks for farm_log_category.module.
  */
 
+declare(strict_types=1);
+
 use Symfony\Component\Yaml\Yaml;
 
 /**

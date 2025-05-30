@@ -5,6 +5,8 @@
  * Provides Views runtime hooks for farm_structure.module.
  */
 
+declare(strict_types=1);
+
 use Drupal\farm_structure\Entity\FarmStructureType;
 use Drupal\views\ViewExecutable;
 
@@ -29,19 +31,17 @@ function farm_structure_views_pre_render(ViewExecutable $view) {
     $exposed_filters = $view->getExposedInput();
 
     // If the structure type exposed filter is already in use remove structure
-    // types that are not included.
-    if (!empty($exposed_filters['structure_type_value'])) {
-      $structure_types = array_filter($structure_types, function ($key) use ($exposed_filters) {
-        return in_array($key, $exposed_filters['structure_type_value']);
-      }, ARRAY_FILTER_USE_KEY);
+    // types that are not specified in the filter value.
+    if (isset($exposed_filters['structure_type_value'])) {
+      $structure_type_filters = (array) $exposed_filters['structure_type_value'];
+      $structure_types = array_intersect_key($structure_types, $structure_type_filters);
     }
 
     // Create a layer for each structure type.
     $asset_layers = [];
     foreach ($structure_types as $structure_type) {
-      /** @var \Drupal\farm_map\Entity\LayerStyleInterface $layer_style */
-      $layer_style = \Drupal::service('farm_map.layer_style_loader')->load(['asset_type' => 'structure', 'structure_type' => $structure_type->id()]);
-      if (!is_null($layer_style)) {
+      /** @var \Drupal\farm_map\Entity\LayerStyleInterface|null $layer_style */
+      if ($layer_style = \Drupal::service('farm_map.layer_style_loader')->load(['asset_type' => 'structure', 'structure_type' => $structure_type->id()])) {
         $color = $layer_style->get('color');
       }
       $asset_layers['structure_' . $structure_type->id()] = [
